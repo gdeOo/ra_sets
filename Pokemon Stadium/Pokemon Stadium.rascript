@@ -1384,9 +1384,11 @@ rental_cup_ach("Prime Cup",  "Master Ball", "Prime Cup for Rent", "Win the Maste
 
 achievement(
     title="House Advantage",
-    description="Lose a battle even though all enemy pokemon have fainted",
+    description="Lose a Stadium or Gym Leader Castle battle even though all enemy pokemon have fainted",
     points=5,
-    trigger=p1_3_team_all_fainted()
+    trigger=((in_mode2("Gym Leader Castle") && in_mode("Gym Leader Castle"))
+             || (in_mode2("Stadium") && (in_mode("Petit Cup") || in_mode("Pika Cup") || in_mode("Poke Cup") || in_mode("Prime Cup"))))
+            && p1_3_team_all_fainted()
             && p2_3_team_all_fainted()
             && battle_is_lost()
 )
