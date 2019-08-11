@@ -1515,11 +1515,11 @@ achievement(
 
 achievement(
     title="Water at the End of the Tunnel",
-    description="Win \"Dig! Dig! Dig!\" in 6 seconds or less (as 1P vs 3 Hard COMs)",
+    description="Win \"Dig! Dig! Dig!\" in 6.5 seconds or less (as 1P vs 3 Hard COMs)",
     points=3,
     trigger=minigame_common_trigger("Dig! Dig! Dig!")
            && once(                             // store the fact that:
-               minigame_timer_le(60)            //   timer was <= 6s ...
+               minigame_timer_le(65)            //   timer was <= 6.5s ...
                && minigame_just_lost_control()  //   ... when the player lost control (the winner is only announced later)
            )
 )
