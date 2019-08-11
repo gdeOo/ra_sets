@@ -1574,9 +1574,8 @@ achievement(
 
 round_lookup = rich_presence_lookup("Round", round_val(), {
     0x00: "",
-    0x01: " R-2",
-     "*": ""
-})
+    0x01: " R-2"
+}, "")
 
 trainer_lookup = rich_presence_lookup("Trainer", trainer_id(), {
     0x01: "Trainer",
@@ -1623,9 +1622,8 @@ trainer_lookup = rich_presence_lookup("Trainer", trainer_id(), {
     0x2a: "Psychic",
     0x2b: "Rocket",
     0x34: "Mewtwo",
-    0x35: "Trainer ×2",
-     "*": "Trainer"
-})
+    0x35: "Trainer ×2"
+}, "Trainer")
 
 // start
 
@@ -1669,9 +1667,9 @@ rich_presence_conditional_display(
         0x00039560: "Collecting a prize Pokemon",
         0x00075f70: "Checking out the Pokedex",
         0x00045b20: "Checking out the Pokedex",
-        0x00068b60: "Checking out the Pokedex",
-               "*": "Chilling"
-    })
+        0x00068b60: "Checking out the Pokedex"
+    }),
+    "Chilling"
 )
 
 // hall of fame
@@ -1724,9 +1722,8 @@ rich_presence_conditional_display(
         0x00: "Poke Ball ",
         0x01: "Great Ball ",
         0x02: "Ultra Ball ",
-        0x03: "Master Ball ",
-         "*": ""
-    }),
+        0x03: "Master Ball "
+    }, ""),
     cup_lookup,
     round_lookup,
     cup_continues_val
@@ -1775,9 +1772,8 @@ rich_presence_conditional_display(
         0x06: "Cinnabar Gym",
         0x07: "Viridian Gym",
         0x08: "the Elite Four",
-        0x09: "the Elite Four",
-         "*": "the Gym Leader Castle"
-    }),
+        0x09: "the Elite Four"
+    }, "the Gym Leader Castle"),
     round_lookup
 )
 
