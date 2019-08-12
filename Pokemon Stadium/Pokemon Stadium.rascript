@@ -1068,6 +1068,10 @@ function minigame_drowzee_hypnosis_state() {
     return word(0x1a3236)
 }
 function minigame_drowzee_missed_hypnosis() => minigame_drowzee_hypnosis_state() == 0xffff
+function minigame_drowzee_just_missed_hypnosis() {
+    return prev(minigame_drowzee_hypnosis_state()) == 0x0000
+        && minigame_drowzee_hypnosis_state() == 0xffff
+}
 
 function minigame_sushi_score_immediate() => word(0x196060)
 function minigame_sushi_score_end_counter() => word(0x196064)
@@ -1437,18 +1441,19 @@ achievement(
 function minigame_common_trigger(minigame_name) {
     return in_mode2("Kids Club")
            && never(in_minigame_mode("game select"))  // - reset if we get out of the minigame
-           && never(!in_minigame(minigame_name))   // - reset if the selected minigame is not the target
-           && never(!minigame_after_countdown())   // - wait until the countdown is finished to process the remaining logic
-           && once(minigame_countdown_ended())     // - make sure the remaining logic operates on the whole game's timeframe
+           && never(!in_minigame(minigame_name))      // - reset if the selected minigame is not the target
+           && never(!minigame_after_countdown())      // - wait until the countdown is finished to process the remaining logic
+           && never(minigame_is_paused())             // - reset if paused
+           && once(minigame_countdown_ended())        // - make sure the remaining logic operates on the whole game's timeframe
            && minigame_playing_solo()
            && in_minigame_difficulty("Hard")
            && minigame_p1_won()
-           && minigame_finished()                  // - trigger when the winner is announced
+           && minigame_finished()                     // - trigger when the winner is announced
 }
 
 achievement(
     title="Fish out of Water",
-    description="Win Magikarp's Splash with 30+ points (as 1P vs 3 Hard COMs)",
+    description="Win Magikarp's Splash with 30+ points (as 1P vs 3 Hard COMs w/o pausing)",
     points=5,
     trigger=minigame_common_trigger("Magikarp's Splash")
             && minigame_magikarp_score_ge(30)
@@ -1456,7 +1461,7 @@ achievement(
 
 achievement(
     title="Honor Student",
-    description="Win Clefairy Says without making a single mistake (as 1P vs 3 Hard COMs)",
+    description="Win Clefairy Says without making a single mistake (as 1P vs 3 Hard COMs w/o pausing)",
     points=5,
     trigger=minigame_common_trigger("Clefairy Says")
             && minigame_clefairy_at_max_hp()
@@ -1464,7 +1469,7 @@ achievement(
 
 achievement(
     title="Rat Race",
-    description="Win \"Run, Rattata, Run\" without hitting a single hurdle (as 1P vs 3 Hard COMs)",
+    description="Win \"Run, Rattata, Run\" without hitting a single hurdle (as 1P vs 3 Hard COMs w/o pausing)",
     points=2,
     trigger=minigame_common_trigger("Run, Rattata, Run")
             && minigame_rattata_no_barriers_hit()
@@ -1472,15 +1477,15 @@ achievement(
 
 achievement(
     title="Hypnotherapy",
-    description="Win Snore War without missing a single Hypnosis (as 1P vs 3 Hard COMs)",
+    description="Win Snore War without missing more than 5 Hypnosis (as 1P vs 3 Hard COMs w/o pausing)",
     points=10,
     trigger=minigame_common_trigger("Snore War")
-            && never(minigame_drowzee_missed_hypnosis())
+            && never(repeated(6, minigame_drowzee_just_missed_hypnosis()))
 )
 
-achievement(  // TODO: reduce this another second?
+achievement(
     title="Lightning Fast",
-    description="Win Thundering Dynamo in 8 seconds or less (as 1P vs 3 Hard COMs)",
+    description="Win Thundering Dynamo in 8 seconds or less (as 1P vs 3 Hard COMs w/o pausing)",
     points=5,
     trigger=minigame_common_trigger("Thundering Dynamo")
             && once(                             // store the fact that:
@@ -1491,7 +1496,7 @@ achievement(  // TODO: reduce this another second?
 
 achievement(
     title="No Chopsticks Required",
-    description="Win Sushi-Go-Round having spent 12.000+ poke dollars (as 1P vs 3 Hard COMs)",
+    description="Win Sushi-Go-Round having spent 12.000+ poke dollars (as 1P vs 3 Hard COMs w/o pausing)",
     points=10,
     trigger=minigame_common_trigger("Sushi-Go-Round")
             && minigame_sushi_score_ge(12000)
@@ -1499,7 +1504,7 @@ achievement(
 
 achievement(
     title="Shoot Some Hoops",
-    description="Win Ekans' Hoop Hurl with a 15+ score (as 1P vs 3 Hard COMs)",
+    description="Win Ekans' Hoop Hurl with a 15+ score (as 1P vs 3 Hard COMs w/o pausing)",
     points=10,
     trigger=minigame_common_trigger("Ekans' Hoop Hurl")
             && minigame_ekans_score_ge(15)
@@ -1507,7 +1512,7 @@ achievement(
 
 achievement(
     title="Tough It Out",
-    description="Win Rock Harden with 50%+ HP left (as 1P vs 3 Hard COMs)",
+    description="Win Rock Harden with 50%+ HP left (as 1P vs 3 Hard COMs w/o pausing)",
     points=10,
     trigger=minigame_common_trigger("Rock Harden")
             && minigame_harden_hp_percentage_ge(50)
@@ -1515,7 +1520,7 @@ achievement(
 
 achievement(
     title="Water at the End of the Tunnel",
-    description="Win \"Dig! Dig! Dig!\" in 6.5 seconds or less (as 1P vs 3 Hard COMs)",
+    description="Win \"Dig! Dig! Dig!\" in 6.5 seconds or less (as 1P vs 3 Hard COMs w/o pausing)",
     points=3,
     trigger=minigame_common_trigger("Dig! Dig! Dig!")
            && once(                             // store the fact that:
