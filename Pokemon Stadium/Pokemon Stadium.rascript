@@ -1153,6 +1153,8 @@ function minigame_just_lost_control() {
 // transfer pak
 
 achievement(
+    id=79852,
+    badge="85913",
     title="Bring Your Pokemon to Work Day",
     description="Win a Stadium or Gym Leader Castle battle using only Pokemon from a Red, Blue or Yellow game",
     points=1,
@@ -1165,6 +1167,8 @@ achievement(
 )
 
 achievement(
+    id=79853,
+    badge="85918",
     title="Take Me With You",
     description="Transfer a Pokemon from Oak's prize pokeball to a Red, Blue or Yellow game",
     points=1,
@@ -1188,8 +1192,10 @@ function beat_trainer_by_id_trigger(mode_name, trainer_name, round) {
 
 // gym leader castle R1 & R2
 
-function castle_ach(trainer_id, round, title, description, points) {
+function castle_ach(trainer_id, round, title, description, points, id, badge) {
     achievement(
+        id=id,
+        badge=badge,
         title=title,
         description=description,
         points=points,
@@ -1197,25 +1203,25 @@ function castle_ach(trainer_id, round, title, description, points) {
     )
 }
 
-castle_ach("Brock",   1, "Brock",         "Defeat Pewter Gym Leader Brock",       3)
-castle_ach("Misty",   1, "Misty",         "Defeat Cerulean Gym Leader Misty",     3)
-castle_ach("Surge",   1, "Surge",         "Defeat Vermilion Gym Leader Surge",    3)
-castle_ach("Erika",   1, "Erika",         "Defeat Celadon Gym Leader Erika",      3)
-castle_ach("Koga",    1, "Koga",          "Defeat Fuchsia Gym Leader Koga",       3)
-castle_ach("Sabrina", 1, "Sabrina",       "Defeat Saffron Gym Leader Sabrina",    3)
-castle_ach("Blaine",  1, "Blaine",        "Defeat Cinnabar Gym Leader Blaine",    3)
-castle_ach("Giovani", 1, "Giovani",       "Defeat Viridian Gym Leader Giovani",   3)
-castle_ach("Rival",   1, "The Very Best", "Defeat the Elite Four and your Rival", 10)
+castle_ach("Brock",   1, "Brock",         "Defeat Pewter Gym Leader Brock",       3,  79855, "85847")
+castle_ach("Misty",   1, "Misty",         "Defeat Cerulean Gym Leader Misty",     3,  79856, "85849")
+castle_ach("Surge",   1, "Surge",         "Defeat Vermilion Gym Leader Surge",    3,  79857, "85851")
+castle_ach("Erika",   1, "Erika",         "Defeat Celadon Gym Leader Erika",      3,  79858, "85853")
+castle_ach("Koga",    1, "Koga",          "Defeat Fuchsia Gym Leader Koga",       3,  79859, "85855")
+castle_ach("Sabrina", 1, "Sabrina",       "Defeat Saffron Gym Leader Sabrina",    3,  79860, "85857")
+castle_ach("Blaine",  1, "Blaine",        "Defeat Cinnabar Gym Leader Blaine",    3,  79861, "85859")
+castle_ach("Giovani", 1, "Giovani",       "Defeat Viridian Gym Leader Giovani",   3,  79862, "85861")
+castle_ach("Rival",   1, "The Very Best", "Defeat the Elite Four and your Rival", 10, 79863, "85863")
 
-castle_ach("Brock",   2, "Brock R-2",         "Defeat Pewter Gym Leader Brock in Round 2",       5)
-castle_ach("Misty",   2, "Misty R-2",         "Defeat Cerulean Gym Leader Misty in Round 2",     5)
-castle_ach("Surge",   2, "Surge R-2",         "Defeat Vermilion Gym Leader Surge in Round 2",    5)
-castle_ach("Erika",   2, "Erika R-2",         "Defeat Celadon Gym Leader Erika in Round 2",      5)
-castle_ach("Koga",    2, "Koga R-2",          "Defeat Fuchsia Gym Leader Koga in Round 2",       5)
-castle_ach("Sabrina", 2, "Sabrina R-2",       "Defeat Saffron Gym Leader Sabrina in Round 2",    5)
-castle_ach("Blaine",  2, "Blaine R-2",        "Defeat Cinnabar Gym Leader Blaine in Round 2",    5)
-castle_ach("Giovani", 2, "Giovani R-2",       "Defeat Viridian Gym Leader Giovani in Round 2",   5)
-castle_ach("Rival",   2, "The Very Best R-2", "Defeat the Elite Four and your Rival in Round 2", 25)
+castle_ach("Brock",   2, "Brock R-2",         "Defeat Pewter Gym Leader Brock in Round 2",       5,  79876, "85848")
+castle_ach("Misty",   2, "Misty R-2",         "Defeat Cerulean Gym Leader Misty in Round 2",     5,  79877, "85850")
+castle_ach("Surge",   2, "Surge R-2",         "Defeat Vermilion Gym Leader Surge in Round 2",    5,  79878, "85852")
+castle_ach("Erika",   2, "Erika R-2",         "Defeat Celadon Gym Leader Erika in Round 2",      5,  79879, "85854")
+castle_ach("Koga",    2, "Koga R-2",          "Defeat Fuchsia Gym Leader Koga in Round 2",       5,  79880, "85856")
+castle_ach("Sabrina", 2, "Sabrina R-2",       "Defeat Saffron Gym Leader Sabrina in Round 2",    5,  79881, "85858")
+castle_ach("Blaine",  2, "Blaine R-2",        "Defeat Cinnabar Gym Leader Blaine in Round 2",    5,  79882, "85860")
+castle_ach("Giovani", 2, "Giovani R-2",       "Defeat Viridian Gym Leader Giovani in Round 2",   5,  79883, "85862")
+castle_ach("Rival",   2, "The Very Best R-2", "Defeat the Elite Four and your Rival in Round 2", 25, 79884, "85864")
 
 // cups R1 & R2
 
@@ -1228,8 +1234,10 @@ function beat_cup_trigger(mode_name, difficulty_name, round) {
         && battle_is_won()
 }
 
-function cup_ach(mode, difficulty, round, title, description, points) {
+function cup_ach(mode, difficulty, round, title, description, points, id, badge) {
     achievement(
+        id=id,
+        badge=badge,
         title=title,
         description=description,
         points=points,
@@ -1237,27 +1245,27 @@ function cup_ach(mode, difficulty, round, title, description, points) {
     )
 }
 
-cup_ach("Petit Cup",  "Poke Ball",   1, "Petit Cup",             "Win the Petit Cup",             10)
-cup_ach("Pika Cup",   "Poke Ball",   1, "Pika Cup",              "Win the Pika Cup",              10)
-cup_ach("Poke Cup",   "Poke Ball",   1, "Poke Ball Poke Cup",    "Win the Poke Ball Poke Cup",    5)
-cup_ach("Poke Cup",   "Great Ball",  1, "Great Ball Poke Cup",   "Win the Great Ball Poke Cup",   5)
-cup_ach("Poke Cup",   "Ultra Ball",  1, "Ultra Ball Poke Cup",   "Win the Ultra Ball Poke Cup",   5)
-cup_ach("Poke Cup",   "Master Ball", 1, "Master Ball Poke Cup",  "Win the Master Ball Poke Cup",  10)
-cup_ach("Prime Cup",  "Poke Ball",   1, "Poke Ball Prime Cup",   "Win the Poke Ball Prime Cup",   5)
-cup_ach("Prime Cup",  "Great Ball",  1, "Great Ball Prime Cup",  "Win the Great Ball Prime Cup",  5)
-cup_ach("Prime Cup",  "Ultra Ball",  1, "Ultra Ball Prime Cup",  "Win the Ultra Ball Prime Cup",  5)
-cup_ach("Prime Cup",  "Master Ball", 1, "Master Ball Prime Cup", "Win the Master Ball Prime Cup", 10)
+cup_ach("Petit Cup",  "Poke Ball",   1, "Petit Cup",             "Win the Petit Cup",             10, 79864, "85865")
+cup_ach("Pika Cup",   "Poke Ball",   1, "Pika Cup",              "Win the Pika Cup",              10, 79865, "85866")
+cup_ach("Poke Cup",   "Poke Ball",   1, "Poke Ball Poke Cup",    "Win the Poke Ball Poke Cup",    5,  79866, "85867")
+cup_ach("Poke Cup",   "Great Ball",  1, "Great Ball Poke Cup",   "Win the Great Ball Poke Cup",   5,  79867, "85868")
+cup_ach("Poke Cup",   "Ultra Ball",  1, "Ultra Ball Poke Cup",   "Win the Ultra Ball Poke Cup",   5,  79868, "85869")
+cup_ach("Poke Cup",   "Master Ball", 1, "Master Ball Poke Cup",  "Win the Master Ball Poke Cup",  10, 79869, "85870")
+cup_ach("Prime Cup",  "Poke Ball",   1, "Poke Ball Prime Cup",   "Win the Poke Ball Prime Cup",   5,  79870, "85871")
+cup_ach("Prime Cup",  "Great Ball",  1, "Great Ball Prime Cup",  "Win the Great Ball Prime Cup",  5,  79871, "85872")
+cup_ach("Prime Cup",  "Ultra Ball",  1, "Ultra Ball Prime Cup",  "Win the Ultra Ball Prime Cup",  5,  79872, "85873")
+cup_ach("Prime Cup",  "Master Ball", 1, "Master Ball Prime Cup", "Win the Master Ball Prime Cup", 10, 79873, "85874")
 
-cup_ach("Petit Cup",  "Poke Ball",   2, "Petit Cup R-2",             "Win the Petit Cup in Round 2",             25)
-cup_ach("Pika Cup",   "Poke Ball",   2, "Pika Cup R-2",              "Win the Pika Cup in Round 2",              25)
-cup_ach("Poke Cup",   "Poke Ball",   2, "Poke Ball Poke Cup R-2",    "Win the Poke Ball Poke Cup in Round 2",    10)
-cup_ach("Poke Cup",   "Great Ball",  2, "Great Ball Poke Cup R-2",   "Win the Great Ball Poke Cup in Round 2",   10)
-cup_ach("Poke Cup",   "Ultra Ball",  2, "Ultra Ball Poke Cup R-2",   "Win the Ultra Ball Poke Cup in Round 2",   10)
-cup_ach("Poke Cup",   "Master Ball", 2, "Master Ball Poke Cup R-2",  "Win the Master Ball Poke Cup in Round 2",  25)
-cup_ach("Prime Cup",  "Poke Ball",   2, "Poke Ball Prime Cup R-2",   "Win the Poke Ball Prime Cup in Round 2",   10)
-cup_ach("Prime Cup",  "Great Ball",  2, "Great Ball Prime Cup R-2",  "Win the Great Ball Prime Cup in Round 2",  10)
-cup_ach("Prime Cup",  "Ultra Ball",  2, "Ultra Ball Prime Cup R-2",  "Win the Ultra Ball Prime Cup in Round 2",  10)
-cup_ach("Prime Cup",  "Master Ball", 2, "Master Ball Prime Cup R-2", "Win the Master Ball Prime Cup in Round 2", 25)
+cup_ach("Petit Cup",  "Poke Ball",   2, "Petit Cup R-2",             "Win the Petit Cup in Round 2",             25, 79886, "85875")
+cup_ach("Pika Cup",   "Poke Ball",   2, "Pika Cup R-2",              "Win the Pika Cup in Round 2",              25, 79885, "85876")
+cup_ach("Poke Cup",   "Poke Ball",   2, "Poke Ball Poke Cup R-2",    "Win the Poke Ball Poke Cup in Round 2",    10, 79887, "85877")
+cup_ach("Poke Cup",   "Great Ball",  2, "Great Ball Poke Cup R-2",   "Win the Great Ball Poke Cup in Round 2",   10, 79888, "85878")
+cup_ach("Poke Cup",   "Ultra Ball",  2, "Ultra Ball Poke Cup R-2",   "Win the Ultra Ball Poke Cup in Round 2",   10, 79889, "85879")
+cup_ach("Poke Cup",   "Master Ball", 2, "Master Ball Poke Cup R-2",  "Win the Master Ball Poke Cup in Round 2",  25, 79890, "85880")
+cup_ach("Prime Cup",  "Poke Ball",   2, "Poke Ball Prime Cup R-2",   "Win the Poke Ball Prime Cup in Round 2",   10, 79891, "85881")
+cup_ach("Prime Cup",  "Great Ball",  2, "Great Ball Prime Cup R-2",  "Win the Great Ball Prime Cup in Round 2",  10, 79892, "85882")
+cup_ach("Prime Cup",  "Ultra Ball",  2, "Ultra Ball Prime Cup R-2",  "Win the Ultra Ball Prime Cup in Round 2",  10, 79893, "85883")
+cup_ach("Prime Cup",  "Master Ball", 2, "Master Ball Prime Cup R-2", "Win the Master Ball Prime Cup in Round 2", 25, 79894, "85884")
 
 // mewtwo
 
@@ -1269,8 +1277,10 @@ function mewtwo_trigger(round) {
            && battle_is_won()
 }
 
-function mewtwo_ach(round, title, description, points) {
+function mewtwo_ach(round, title, description, points, id, badge) {
     achievement(
+        id=id,
+        badge=badge,
         title=title,
         description=description,
         points=points,
@@ -1278,13 +1288,15 @@ function mewtwo_ach(round, title, description, points) {
     )
 }
 
-mewtwo_ach(1, "The Ultimate Pokemon",     "Defeat Mewtwo",            5)
-mewtwo_ach(2, "The Ultimate Pokemon R-2", "Defeat Mewtwo in Round 2", 10)
+mewtwo_ach(1, "The Ultimate Pokemon",     "Defeat Mewtwo",            5,  79874, "85885")
+mewtwo_ach(2, "The Ultimate Pokemon R-2", "Defeat Mewtwo in Round 2", 10, 79895, "85886")
 
 // battle now
 
-function battle_now_ach(round, title, description, points) {
+function battle_now_ach(round, title, description, points, id, badge) {
     achievement(
+        id=id,
+        badge=badge,
         title=title,
         description=description,
         points=points,
@@ -1293,13 +1305,15 @@ function battle_now_ach(round, title, description, points) {
     )
 }
 
-battle_now_ach(1, "Thirsty for Battle",    "Defeat Red in 1P \"Battle Now!\"",            3)
-battle_now_ach(2, "Right Here, Right Now", "Defeat Yellow in 1P \"Battle Now!\" Round 2", 3)
+battle_now_ach(1, "Thirsty for Battle",    "Defeat Red in 1P \"Battle Now!\"",            3, 79854, "85910")
+battle_now_ach(2, "Right Here, Right Now", "Defeat Yellow in 1P \"Battle Now!\" Round 2", 3, 79875, "85911")
 
 // hall of fame
 
-function hofame_progression_ach(title, description, points, n_pokemon) {
+function hofame_progression_ach(title, description, points, n_pokemon, id, badge) {
     achievement(
+        id=id,
+        badge=badge,
         title=title,
         description=description,
         points=points,
@@ -1315,10 +1329,12 @@ function hofame_progression_ach(title, description, points, n_pokemon) {
     )
 }
 
-hofame_progression_ach("A Respectable Start",   "Register 50 Pokemon in the Hall of Fame",  10, 50)
-hofame_progression_ach("Most of the Way There", "Register 100 Pokemon in the Hall of Fame", 25, 100)
+hofame_progression_ach("A Respectable Start",   "Register 50 Pokemon in the Hall of Fame",  10, 50,  79908, "85915")
+hofame_progression_ach("Most of the Way There", "Register 100 Pokemon in the Hall of Fame", 25, 100, 79909, "85916")
 
 achievement(
+    id=79910,
+    badge="85912",
     title="It's All a Blur",
     description="Get an Amnesia Psyduck for registering 151 Pokemon in the Hall of Fame",
     points=50,
@@ -1329,6 +1345,8 @@ achievement(
 )
 
 achievement(
+    id=79907,
+    badge="85917",
     title="Raised Him Myself",
     description="Register Mewtwo into the Hall of Fame",
     points=2,
@@ -1340,6 +1358,8 @@ achievement(
 // battle challenges
 
 achievement(
+    id=79896,
+    badge="85887",
     title="Bored Medical Team",
     description="Win a cup using only rental Pokemon and not letting a single one faint",
     points=50,
@@ -1353,15 +1373,19 @@ achievement(
 )
 
 achievement(
+    id=79903,
+    badge="85888",
     title="Rent-a-Mew",
     description="Defeat Mewtwo in Round 2 using only rental Pokemon and having Mew deliver the final blow",
-    points=10,  // TODO: might be a 25...
+    points=10,
     trigger=mewtwo_trigger(2)
             && p1_6_team_all_rentals()
             && p1_current_pk_is("Mew")
 )
 
 achievement(
+    id=79901,
+    badge="85909",
     title="Rental Champion",
     description="Defeat the Elite Four and your Rival in Round 2 using only rental Pokemon",
     points=50,
@@ -1369,8 +1393,10 @@ achievement(
             && p1_6_team_all_rentals()
 )
 
-function rental_cup_ach(mode, difficulty, title, description, points) {
+function rental_cup_ach(mode, difficulty, title, description, points, id, badge) {
     achievement(
+        id=id,
+        badge=badge,
         title=title,
         description=description,
         points=points,
@@ -1379,14 +1405,16 @@ function rental_cup_ach(mode, difficulty, title, description, points) {
     )
 }
 
-rental_cup_ach("Petit Cup",  "Poke Ball",   "Petit Cup for Rent", "Win the Petit Cup in Round 2 using only rental Pokemon",             50)
-rental_cup_ach("Pika Cup",   "Poke Ball",   "Pika Cup for Rent",  "Win the Pika Cup in Round 2 using only rental Pokemon",              50)
-rental_cup_ach("Poke Cup",   "Master Ball", "Poke Cup for Rent",  "Win the Master Ball Poke Cup in Round 2 using only rental Pokemon",  50)
-rental_cup_ach("Prime Cup",  "Master Ball", "Prime Cup for Rent", "Win the Master Ball Prime Cup in Round 2 using only rental Pokemon", 50)
+rental_cup_ach("Petit Cup",  "Poke Ball",   "Petit Cup for Rent", "Win the Petit Cup in Round 2 using only rental Pokemon",             50, 79897, "85905")
+rental_cup_ach("Pika Cup",   "Poke Ball",   "Pika Cup for Rent",  "Win the Pika Cup in Round 2 using only rental Pokemon",              50, 79898, "85906")
+rental_cup_ach("Poke Cup",   "Master Ball", "Poke Cup for Rent",  "Win the Master Ball Poke Cup in Round 2 using only rental Pokemon",  50, 79899, "85907")
+rental_cup_ach("Prime Cup",  "Master Ball", "Prime Cup for Rent", "Win the Master Ball Prime Cup in Round 2 using only rental Pokemon", 50, 79900, "85908")
 
 // misc
 
 achievement(
+    id=79905,
+    badge="85889",
     title="House Advantage",
     description="Lose a Stadium or Gym Leader Castle battle even though all enemy pokemon have fainted",
     points=5,
@@ -1398,6 +1426,8 @@ achievement(
 )
 
 achievement(
+    id=79906,
+    badge="85891",
     title="The Struggle is Real",
     description="Get an opposing Pokemon to knock itself out with Struggle",
     points=2,
@@ -1415,6 +1445,8 @@ achievement(
 )
 
 achievement(
+    id=79904,
+    badge="85890",
     title="The Ultimate Reward!",
     description="Go to the gallery and obtain your reward for beating the whole game",
     points=1,
@@ -1427,6 +1459,8 @@ achievement(
 // surfing pikachu
 
 achievement(
+    id=79902,
+    badge="85914",
     title="What's a Lapras to a Pikachu?",
     description="Teach Surf to a Pikachu as the reward for using it in every battle of a Master Ball Prime Cup R-2 win",
     points=50,
@@ -1452,40 +1486,50 @@ function minigame_common_trigger(minigame_name) {
 }
 
 achievement(
+    id=79911,
+    badge="86593",
     title="Fish out of Water",
-    description="Win Magikarp's Splash with 30+ points (as 1P vs 3 Hard COMs w/o pausing)",
+    description="Win Magikarp's Splash with 30+ points (as 1P vs 3 Hard COMs, no pausing)",
     points=5,
     trigger=minigame_common_trigger("Magikarp's Splash")
             && minigame_magikarp_score_ge(30)
 )
 
 achievement(
+    id=79912,
+    badge="86594",
     title="Honor Student",
-    description="Win Clefairy Says without making a single mistake (as 1P vs 3 Hard COMs w/o pausing)",
+    description="Win Clefairy Says without making a single mistake (as 1P vs 3 Hard COMs, no pausing)",
     points=5,
     trigger=minigame_common_trigger("Clefairy Says")
             && minigame_clefairy_at_max_hp()
 )
 
 achievement(
+    id=79913,
+    badge="86595",
     title="Rat Race",
-    description="Win \"Run, Rattata, Run\" without hitting a single hurdle (as 1P vs 3 Hard COMs w/o pausing)",
+    description="Win \"Run, Rattata, Run\" without hitting a single hurdle (as 1P vs 3 Hard COMs, no pausing)",
     points=2,
     trigger=minigame_common_trigger("Run, Rattata, Run")
             && minigame_rattata_no_barriers_hit()
 )
 
 achievement(
+    id=79914,
+    badge="86596",
     title="Hypnotherapy",
-    description="Win Snore War without missing more than 5 Hypnosis (as 1P vs 3 Hard COMs w/o pausing)",
+    description="Win Snore War without missing more than 5 Hypnosis (as 1P vs 3 Hard COMs, no pausing)",
     points=10,
     trigger=minigame_common_trigger("Snore War")
             && never(repeated(6, minigame_drowzee_just_missed_hypnosis()))
 )
 
 achievement(
+    id=79915,
+    badge="86597",
     title="Lightning Fast",
-    description="Win Thundering Dynamo in 8 seconds or less (as 1P vs 3 Hard COMs w/o pausing)",
+    description="Win Thundering Dynamo in 8 seconds or less (as 1P vs 3 Hard COMs, no pausing)",
     points=5,
     trigger=minigame_common_trigger("Thundering Dynamo")
             && once(                             // store the fact that:
@@ -1495,32 +1539,40 @@ achievement(
 )
 
 achievement(
+    id=79916,
+    badge="86598",
     title="No Chopsticks Required",
-    description="Win Sushi-Go-Round having spent 12.000+ poke dollars (as 1P vs 3 Hard COMs w/o pausing)",
+    description="Win Sushi-Go-Round having spent 12.000+ poke dollars (as 1P vs 3 Hard COMs, no pausing)",
     points=10,
     trigger=minigame_common_trigger("Sushi-Go-Round")
             && minigame_sushi_score_ge(12000)
 )
 
 achievement(
+    id=79917,
+    badge="86599",
     title="Shoot Some Hoops",
-    description="Win Ekans' Hoop Hurl with a 15+ score (as 1P vs 3 Hard COMs w/o pausing)",
+    description="Win Ekans' Hoop Hurl with a 15+ score (as 1P vs 3 Hard COMs, no pausing)",
     points=10,
     trigger=minigame_common_trigger("Ekans' Hoop Hurl")
             && minigame_ekans_score_ge(15)
 )
 
 achievement(
+    id=79918,
+    badge="86600",
     title="Tough It Out",
-    description="Win Rock Harden with 50%+ HP left (as 1P vs 3 Hard COMs w/o pausing)",
+    description="Win Rock Harden with 50%+ HP left (as 1P vs 3 Hard COMs, no pausing)",
     points=10,
     trigger=minigame_common_trigger("Rock Harden")
             && minigame_harden_hp_percentage_ge(50)
 )
 
 achievement(
+    id=79919,
+    badge="86601",
     title="Water at the End of the Tunnel",
-    description="Win \"Dig! Dig! Dig!\" in 6.5 seconds or less (as 1P vs 3 Hard COMs w/o pausing)",
+    description="Win \"Dig! Dig! Dig!\" in 6.5 seconds or less (as 1P vs 3 Hard COMs, no pausing)",
     points=3,
     trigger=minigame_common_trigger("Dig! Dig! Dig!")
            && once(                             // store the fact that:
@@ -1538,6 +1590,8 @@ function whos_the_best_common_trigger(difficulty) {
 }
 
 achievement(
+    id=79920,
+    badge="85901",
     title="COM Sweep",
     description="Win \"Who's the best?\" after 9 wins as 1P vs 3 Normal COMs without letting them have a single win",
     points=10,
@@ -1548,6 +1602,8 @@ achievement(
 )
 
 achievement(
+    id=79921,
+    badge="85902",
     title="Go Hard or Go Home",
     description="Win \"Who's the best?\" after 9 wins as 1P vs 3 Hard COMs without them collectively having more than 9 wins",
     points=10,
@@ -1556,6 +1612,8 @@ achievement(
 )
 
 achievement(
+    id=79922,
+    badge="85903",
     title="Hyperactive COMs",
     description="Unlock Hyper COM level in the Kids Club",
     points=5,
@@ -1565,6 +1623,8 @@ achievement(
 )
 
 achievement(
+    id=79923,
+    badge="85904",
     title="I Swear They're Cheating",
     description="Win \"Who's the best?\" after 9 wins as 1P vs 3 Hyper COMs",
     points=25,
