@@ -1397,7 +1397,7 @@ achievement(
     badge="85887",
     title="Bored Medical Team",
     description="Win a cup using only rental Pokemon and not letting a single one faint",
-    points=50,
+    points=10,
     trigger=(in_mode("Petit Cup") || in_mode("Pika Cup") || in_mode("Poke Cup") || in_mode("Prime Cup"))
             && p1_6_team_all_rentals()
             && have_continues(7)
