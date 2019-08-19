@@ -571,7 +571,11 @@ pokemon_struct_offset = {
     "move_2_id":  0x09,  // byte
     "move_1_id":  0x0a,  // byte
     "trainer_id": 0x0c,  // word
-    "move_4_id":  0x0f   // byte
+    "move_4_id":  0x0f,  // byte
+    "pp_left":    0x20,  // byte
+    "pp_down":    0x21,  // byte
+    "pp_right":   0x22,  // byte
+    "pp_up":      0x23   // byte
 }
 pokemon_struct_sizeof = 0x54
 
@@ -626,6 +630,11 @@ function p1_3_team_no_rentals() {
 p2_3_team_arr_addr = 0x0ae77c
 
 function p2_3_team_pk_hp(pk_index) => word(pk_array_field_addr(p2_3_team_arr_addr, pk_index, "hp"))
+function p2_3_team_pk_id(pk_index) => byte(pk_array_field_addr(p2_3_team_arr_addr, pk_index, "id"))
+function p2_3_team_pk_pp_left(pk_index) => byte(pk_array_field_addr(p2_3_team_arr_addr, pk_index, "pp_left"))
+function p2_3_team_pk_pp_down(pk_index) => byte(pk_array_field_addr(p2_3_team_arr_addr, pk_index, "pp_down"))
+function p2_3_team_pk_pp_right(pk_index) => byte(pk_array_field_addr(p2_3_team_arr_addr, pk_index, "pp_right"))
+function p2_3_team_pk_pp_up(pk_index) => byte(pk_array_field_addr(p2_3_team_arr_addr, pk_index, "pp_up"))
 
 function p2_3_team_pk_fainted(pk_index) => p2_3_team_pk_hp(pk_index) == 0
 function p2_3_team_all_fainted() {
@@ -669,9 +678,15 @@ function fighting_by_position(position) => trainer_position() == position
 function p1_current_pk() => byte(0x0af6d4)
 function p1_current_pk_is(pk_name) => p1_current_pk() == pokemon[pk_name]
 
+function p2_current_pk() => byte(0x0af6fc)
+function p2_current_pk_is(pk_name) => p2_current_pk() == pokemon[pk_name]
+
 function p2_pk1_current_move() => byte(0x1e8e7f)
 function p2_pk2_current_move() => byte(0x1e8ef1)
 function p2_pk3_current_move() => byte(0x1e8f6b)
+function p2_pk1_current_move_is(move_name) => p2_pk1_current_move() == move[move_name]
+function p2_pk2_current_move_is(move_name) => p2_pk2_current_move() == move[move_name]
+function p2_pk3_current_move_is(move_name) => p2_pk3_current_move() == move[move_name]
 
 function p2_early_current_move_is(move_name) {
     // changes when turn starts
@@ -685,11 +700,31 @@ function p2_late_current_move_is(move_name) {
 function p2_current_pk_hp() => byte(0x2885fa)  // changes when turn starts
 
 p2_current_pk_hp_text_addr = 0x0816b0
+function p2_current_hp_text_char(index) => text_char(p2_current_pk_hp_text_addr, index)
 function p2_current_hp_text_is_zero() {
     return text_starts_with(p2_current_pk_hp_text_addr, [" "," ","0","/"])
 }
 function p2_current_hp_text_was_one() {
     return text_started_with(p2_current_pk_hp_text_addr, [" "," ","1","/"])
+}
+function p2_current_hp_just_turned_zero() {
+    return p2_current_hp_text_is_zero()
+        && (
+            (prev(p2_current_hp_text_char(1)) == charmap[" "] && prev(p2_current_hp_text_char(2)) != charmap["0"])
+            || (prev(p2_current_hp_text_char(1)) != charmap[" "] && prev(p2_current_hp_text_char(2)) == charmap["0"])
+        )
+}
+
+function p2_current_pk_has_no_pp_left() {
+    cond = always_false()
+    for pk_index in range(0, 2) {
+        cond = cond || (p2_current_pk() == p2_3_team_pk_id(pk_index)
+                        && p2_3_team_pk_pp_left(pk_index) == 0
+                        && p2_3_team_pk_pp_down(pk_index) == 0
+                        && p2_3_team_pk_pp_right(pk_index) == 0
+                        && p2_3_team_pk_pp_up(pk_index) == 0)
+    }
+    return cond
 }
 
 // game state
@@ -1429,19 +1464,27 @@ achievement(
     id=79906,
     badge="85891",
     title="The Struggle is Real",
-    description="Get an opposing Pokemon to knock itself out with Struggle",
+    description="Get an opposing Pokemon to knock itself out with Struggle in a Stadium or Gym Leader Castle battle",
     points=2,
     // developing this was, ironically, a struggle... notes:
     //   - normal hp value goes to zero when turn starts, so we look at the hp text instead,
     //     to trigger at a more appropriate/satisfying moment
-    //   - we check that the hp was 1 in the last frame and 0 in the current frame to
+    //   - we check that the hp was not 0 in the last frame and is 0 in the current frame to
     //     ensure that the pokemon was knocked out in its own turn. is_p2_turn by itself
     //     is not enough, because the game still goes into P2-turn mode even when we knock the
     //     the pokemon out normally in P1's turn, which would cause the achievement to trigger
     //     if we only checked that the current hp is 0
-    trigger=is_p2_turn()
-            && p2_current_hp_text_was_one() && p2_current_hp_text_is_zero()
-            && p2_late_current_move_is("Struggle")
+    //   - current move value is not in a static location
+    //   - per-pokemon current move does not update for Struggle....
+    trigger=((in_mode2("Gym Leader Castle") && in_mode("Gym Leader Castle"))
+             || (in_mode2("Stadium") && (in_mode("Petit Cup") || in_mode("Pika Cup") || in_mode("Poke Cup") || in_mode("Prime Cup"))))
+            && fighting_someone()
+            && is_p2_turn()
+            && p2_current_hp_just_turned_zero()
+            // fair warning: if the pokemon knocks itself out with his literal last PP,
+            // the cheevo will trigger even though Struggle wasn't used.
+            // famous last words: this is extremely unlikely to happen!
+            && p2_current_pk_has_no_pp_left()
 )
 
 achievement(
