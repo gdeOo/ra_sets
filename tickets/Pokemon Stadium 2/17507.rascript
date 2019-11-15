@@ -1,12 +1,6 @@
 // Pokemon Stadium 2
 // #ID = 10258
 
-// $091B03: 00 = your move, 01 = their move
-function whose_turn() => byte(0x091B03)
-
-// $11F302: 2a = battle victory
-function battle_is_won() => byte(0x11F302)
-
 // $1451D0: 16bit trainer id
 function trainer_id() => byte(0x1451D0)
 
@@ -28,8 +22,43 @@ function p2_3team_1_hp() => word(0x1457C4)
 // $14581C: Rightmost opposing Pokemon HP
 function p2_3team_2_hp() => word(0x14581C)
 
-// $1E1C3B: Move being used
-function move_being_used() => byte(0x1E1C3B)
+mode__addr = 0x9de94
+mode__mem = byte(mode__addr)
+mode__values = {
+    "Stadium": 0x08
+    // no need for the others right now
+}
+
+function in_stadium() => mode__mem == mode__values["Stadium"]
+
+pokemon_ids = {
+    "Pikachu":   0x19,
+    "Espeon":    0xc4,
+    "Snorlax":   0x8f,
+    "Venusaur":  0x03,
+    "Charizard": 0x06,
+    "Blastoise": 0x09
+}
+
+p1_6team_0_id__addr = 0x1460e3
+p1_6team__sizeof = 96
+
+function p1_6team_pokemon_is(idx, pokemon) {
+    return byte(p1_6team_0_id__addr + (idx * p1_6team__sizeof)) == pokemon_ids[pokemon]
+}
+
+function p1_6team_is(team) {
+    cond = always_true()
+    i = 0
+    for pokemon in team {
+        cond = cond && p1_6team_pokemon_is(i, pokemon)
+        i = i + 1
+    }
+    return cond
+}
+
+function fighting_nth_trainer(n) => trainer_id() == (n - 1)
+
 
 // Ticket 22733: .
 //               MD5: 1561C75D11CEDF356A8DDB1A4A5F9D5D
@@ -49,63 +78,26 @@ function move_being_used() => byte(0x1E1C3B)
 //               MD5: fe05fb7a1e76adcf8942b24a97748939
 //               Emulator: RAProject64
 achievement(
-    title = "The Very Best", description = "Win a cup using a copy of Red's GSC team", points = 3,
+    title = "The Very Best", description = "Win a cup using a copy of Red's GSC team (in the correct order)", points = 3,
     id = 58543, badge = "59283", published = "3/14/2018 7:49:46 PM", modified = "10/22/2019 5:03:01 PM",
     trigger =
-        // we've been through every battle in this session
-        repeated(420, trainer_id() == 1)
-        && repeated(420, trainer_id() == 2)
-        && repeated(420, trainer_id() == 3)
-        && repeated(420, trainer_id() == 4)
-        && repeated(420, trainer_id() == 5)
-        && repeated(420, trainer_id() == 6)
-        && repeated(420, trainer_id() == 7)
-        && repeated(420, trainer_id() == 0)
+        // restrict the logic to cups
+        in_stadium()
+        
+        // team must be correct and in order (foregoing the order requirement would
+        // either require too many alts or an approximate solution)
+        && p1_6team_is(["Pikachu", "Espeon", "Snorlax", "Venusaur", "Charizard", "Blastoise"])
 
-        // is 0x22 = battle loss?
-        && unless(battle_is_won() == 34)
-
-        // reset if we're using a move that is not in the moveset of the allowed pokemon
-        && never(move_being_used() != 0)
-        && unless(move_being_used() == 56)
-        && unless(move_being_used() == 229)
-        && unless(move_being_used() == 110)
-        && unless(move_being_used() == 189)
-        && unless(move_being_used() == 33)
-        && unless(move_being_used() == 202)
-        && unless(move_being_used() == 45)
-        && unless(move_being_used() == 77)
-        && unless(move_being_used() == 184)
-        && unless(move_being_used() == 17)
-        && unless(move_being_used() == 7)
-        && unless(move_being_used() == 129)
-        && unless(move_being_used() == 39)
-        && unless(move_being_used() == 244)
-        && unless(move_being_used() == 60)
-        && unless(move_being_used() == 174)
-        && unless(move_being_used() == 111)
-        && unless(move_being_used() == 29)
-        && unless(move_being_used() == 86)
-        && unless(move_being_used() == 231)
-        && unless(move_being_used() == 85)
-        && unless(move_being_used() == 57)
-        && unless(move_being_used() == 133)
-
-        // more exceptions... probably trying to exclude the moves used by the opponent
-        // also, I feel like the code note's lying about the 0 or 1 part
-        && unless(whose_turn() == 1)
-        && unless(whose_turn() == 76)
-        && unless(whose_turn() == 19)
-        && unless(whose_turn() == 143)
-        && unless(whose_turn() == 91)
-        && unless(whose_turn() == 63)
-        && unless(whose_turn() == 117)
-
-        // trigger on the last battle when the opposing team is kill and ours isnt
+        // trigger on the last battle...
+        // (the hits avoid mistriggering during the transition into the last battle)
+        && repeated(420, fighting_nth_trainer(8))
+        && never(!fighting_nth_trainer(8))
+        
+        // ...when the opposing team is kill and ours isnt
+        // note: this triggers before the last turn is carried out. I could make it trigger at a
+        // more appropriate time, but since all other cheevos are like this, I'll keep this logic
+        // for consistency's sake
         && p2_3team_0_hp() == 0 && p2_3team_1_hp() == 0 && p2_3team_2_hp() == 0
-        && (
-            (p1_3team_0_hp() != 0)
-            || (p1_3team_1_hp() != 0)
-            || (p1_3team_2_hp() != 0)
-        )
+        && ((p1_3team_0_hp() != 0) || (p1_3team_1_hp() != 0) || (p1_3team_2_hp() != 0))
 )
+
