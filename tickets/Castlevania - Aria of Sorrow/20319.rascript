@@ -4,92 +4,123 @@
 // $01B27F: MAX HP high
 function max_hp_high() => byte(0x01B27F)
 
+// When a saved game is copied, the souls are not carried over in the "normal"
+// memory addresses. Instead, they are stored in a same-size array *after*
+// the normal array. So, the souls layout in memory is:
+//
+//   - 28 bytes for red souls
+//   - 28 bytes for red souls from the copied save game
+//   - 12 bytes for blue souls
+//   - 1 byte with unknown meaning (???)
+//   - 12 bytes for blue souls from the copied save game
+//   - 18 bytes for yellow souls
+//   - 18 bytes for yellow souls from the copied save game
+//
+// As such, we must sum both the "normal" and "copy" values to obtain the actual
+// amount of souls, which is what the game display in the menu.
+
 red_souls = {
-    "Bat":            high4(0x01B31C), "Winged Skeleton": low4(0x01B31C),
-    "Merman":         high4(0x01B31D), "Skeleton":        low4(0x01B31D),
-    "Skull Archer":   high4(0x01B31E), "Axe Armor":       low4(0x01B31E),
-    "Blue Crow":      high4(0x01B31F), "Killer Fish":     low4(0x01B31F),
-    "Ghost":          high4(0x01B320), "Zombie Soldier":  low4(0x01B320),
-    "Tiny Devil":     high4(0x01B321), "Siren":           low4(0x01B321),
-    "Rock Armor":     high4(0x01B322), "Durga":           low4(0x01B322),
-    "Arachne":        high4(0x01B323), "Student Witch":   low4(0x01B323),
-    "Evil Butcher":   high4(0x01B324), "Fleaman":         low4(0x01B324),
-    "Altair":         high4(0x01B325), "Waiter Skeleton": low4(0x01B325),
-    "Cockatrice":     high4(0x01B326), "Mudman":          low4(0x01B326),
-    "Harpy":          high4(0x01B327), "Werewolf":        low4(0x01B327),
-    "Needles":        high4(0x01B328), "Une":             low4(0x01B328),
-    "Ukoback":        high4(0x01B329), "Man-Eater":       low4(0x01B329),
-    "Disc Armor":     high4(0x01B32A), "Fish Head":       low4(0x01B32A),
-    "Slime":          high4(0x01B32B), "Nightmare":       low4(0x01B32B),
-    "Ripper":         high4(0x01B32C), "Dryad":           low4(0x01B32C),
-    "Weretiger":      high4(0x01B32D), "Werejaguar":      low4(0x01B32D),
-    "Mandragora":     high4(0x01B32E), "Biphron":         low4(0x01B32E),
-    "Skull Millione": high4(0x01B32F), "Beam Skeleton":   low4(0x01B32F),
-    "Gladiator":      high4(0x01B330), "Gaint Skeleton":  low4(0x01B330),
-    "Flame Demon":    high4(0x01B331), "Demon Lord":      low4(0x01B331),
-    "Valkyrie":       high4(0x01B332), "Lightning Doll":  low4(0x01B332),
-    "Red Minotaur":   high4(0x01B333), "Bomber Armor":    low4(0x01B333),
-    "Balore":         high4(0x01B334), "Legion":          low4(0x01B334),
-    "Nemesis":        high4(0x01B335), "Killer Doll":     low4(0x01B335),
-    "Kyoma Demon":    high4(0x01B336), "Killer Mantle":   low4(0x01B336),
-                                       "Chronomage":      low4(0x01B337)
+    "Bat":            [0x01B31C, 0], "Winged Skeleton": [0x01B31C, 1],
+    "Merman":         [0x01B31D, 0], "Skeleton":        [0x01B31D, 1],
+    "Skull Archer":   [0x01B31E, 0], "Axe Armor":       [0x01B31E, 1],
+    "Blue Crow":      [0x01B31F, 0], "Killer Fish":     [0x01B31F, 1],
+    "Ghost":          [0x01B320, 0], "Zombie Soldier":  [0x01B320, 1],
+    "Tiny Devil":     [0x01B321, 0], "Siren":           [0x01B321, 1],
+    "Rock Armor":     [0x01B322, 0], "Durga":           [0x01B322, 1],
+    "Arachne":        [0x01B323, 0], "Student Witch":   [0x01B323, 1],
+    "Evil Butcher":   [0x01B324, 0], "Fleaman":         [0x01B324, 1],
+    "Altair":         [0x01B325, 0], "Waiter Skeleton": [0x01B325, 1],
+    "Cockatrice":     [0x01B326, 0], "Mudman":          [0x01B326, 1],
+    "Harpy":          [0x01B327, 0], "Werewolf":        [0x01B327, 1],
+    "Needles":        [0x01B328, 0], "Une":             [0x01B328, 1],
+    "Ukoback":        [0x01B329, 0], "Man-Eater":       [0x01B329, 1],
+    "Disc Armor":     [0x01B32A, 0], "Fish Head":       [0x01B32A, 1],
+    "Slime":          [0x01B32B, 0], "Nightmare":       [0x01B32B, 1],
+    "Ripper":         [0x01B32C, 0], "Dryad":           [0x01B32C, 1],
+    "Weretiger":      [0x01B32D, 0], "Werejaguar":      [0x01B32D, 1],
+    "Mandragora":     [0x01B32E, 0], "Biphron":         [0x01B32E, 1],
+    "Skull Millione": [0x01B32F, 0], "Beam Skeleton":   [0x01B32F, 1],
+    "Gladiator":      [0x01B330, 0], "Gaint Skeleton":  [0x01B330, 1],
+    "Flame Demon":    [0x01B331, 0], "Demon Lord":      [0x01B331, 1],
+    "Valkyrie":       [0x01B332, 0], "Lightning Doll":  [0x01B332, 1],
+    "Red Minotaur":   [0x01B333, 0], "Bomber Armor":    [0x01B333, 1],
+    "Balore":         [0x01B334, 0], "Legion":          [0x01B334, 1],
+    "Nemesis":        [0x01B335, 0], "Killer Doll":     [0x01B335, 1],
+    "Kyoma Demon":    [0x01B336, 0], "Killer Mantle":   [0x01B336, 1],
+                                     "Chronomage":      [0x01B337, 1]
 }
+
+red_copy_offset = 28
 
 blue_souls = {
-    "Giant Bat":      high4(0x01B354), "Flying Armor":  low4(0x01B354),
-    "Buer":           high4(0x01B355), "Black Panther": low4(0x01B355),
-    "Giant Ghost":    high4(0x01B356), "Witch":         low4(0x01B356),
-    "Great Armor":    high4(0x01B357), "Final Guard":   low4(0x01B357),
-    "Bone Pillar":    high4(0x01B358), "Catoblepas":    low4(0x01B358),
-    "Big Golem":      high4(0x01B359), "Cagnazzo":      low4(0x01B359),
-    "Creaking Skull": high4(0x01B35A), "Shadow Knight": low4(0x01B35A),
-    "Persephone":     high4(0x01B35B), "Medusa Head":   low4(0x01B35B),
-    "Devil":          high4(0x01B35C), "Alura Une":     low4(0x01B35C),
-    "Curly":          high4(0x01B35D), "Manticore":     low4(0x01B35D),
-    "Imp":            high4(0x01B35E), "Sky Fish":      low4(0x01B35E),
-    "Death":          high4(0x01B35F), "Alastor":       low4(0x01B35F)
+    "Giant Bat":      [0x01B354, 0], "Flying Armor":  [0x01B354, 1],
+    "Buer":           [0x01B355, 0], "Black Panther": [0x01B355, 1],
+    "Giant Ghost":    [0x01B356, 0], "Witch":         [0x01B356, 1],
+    "Great Armor":    [0x01B357, 0], "Final Guard":   [0x01B357, 1],
+    "Bone Pillar":    [0x01B358, 0], "Catoblepas":    [0x01B358, 1],
+    "Big Golem":      [0x01B359, 0], "Cagnazzo":      [0x01B359, 1],
+    "Creaking Skull": [0x01B35A, 0], "Shadow Knight": [0x01B35A, 1],
+    "Persephone":     [0x01B35B, 0], "Medusa Head":   [0x01B35B, 1],
+    "Devil":          [0x01B35C, 0], "Alura Une":     [0x01B35C, 1],
+    "Curly":          [0x01B35D, 0], "Manticore":     [0x01B35D, 1],
+    "Imp":            [0x01B35E, 0], "Sky Fish":      [0x01B35E, 1],
+    "Death":          [0x01B35F, 0], "Alastor":       [0x01B35F, 1]
 }
+
+blue_copy_offset = 13
 
 yellow_souls = {
-    "Skula":           high4(0x01B36E), "Undine":         low4(0x01B36E),
-    "Iron Golem":      high4(0x01B36F), "Zombie Officer": low4(0x01B36F),
-    "Peeping Eye":     high4(0x01B370), "Dead Warrior":   low4(0x01B370),
-    "Flesh Golem":     high4(0x01B371), "Succubus":       low4(0x01B371),
-    "Giant Work":      high4(0x01B372), "Tsuchinoko":     low4(0x01B372),
-    "Zombie":          high4(0x01B373), "Wooden Golem":   low4(0x01B373),
-    "Headhunter":      high4(0x01B374), "Lubicant":       low4(0x01B374),
-    "Erinys":          high4(0x01B375), "Basilisk":       low4(0x01B375),
-    "Arc Demon":       high4(0x01B376), "Mimic":          low4(0x01B376),
-    "Ectoplasm":       high4(0x01B377), "Poison Worm":    low4(0x01B377),
-    "Skeleton Knight": high4(0x01B378), "Gargoyle":       low4(0x01B378),
-    "Golem":           high4(0x01B379), "Minotaur":       low4(0x01B379),
-    "White Dragon":    high4(0x01B37A), "Triton":         low4(0x01B37A),
-    "Gorgon":          high4(0x01B37B), "Quezlcoatl":     low4(0x01B37B),
-    "Red Crow":        high4(0x01B37C), "Dead Crusader":  low4(0x01B37C),
-    "Bael":            high4(0x01B37D), "Lilith":         low4(0x01B37D),
-    "Ghost Dancer":    high4(0x01B37E), "Stolas":         low4(0x01B37E),
-                                        "Gremlin":        low4(0x01B37F)
+    "Skula":           [0x01B36E, 0], "Undine":         [0x01B36E, 1],
+    "Iron Golem":      [0x01B36F, 0], "Zombie Officer": [0x01B36F, 1],
+    "Peeping Eye":     [0x01B370, 0], "Dead Warrior":   [0x01B370, 1],
+    "Flesh Golem":     [0x01B371, 0], "Succubus":       [0x01B371, 1],
+    "Giant Work":      [0x01B372, 0], "Tsuchinoko":     [0x01B372, 1],
+    "Zombie":          [0x01B373, 0], "Wooden Golem":   [0x01B373, 1],
+    "Headhunter":      [0x01B374, 0], "Lubicant":       [0x01B374, 1],
+    "Erinys":          [0x01B375, 0], "Basilisk":       [0x01B375, 1],
+    "Arc Demon":       [0x01B376, 0], "Mimic":          [0x01B376, 1],
+    "Ectoplasm":       [0x01B377, 0], "Poison Worm":    [0x01B377, 1],
+    "Skeleton Knight": [0x01B378, 0], "Gargoyle":       [0x01B378, 1],
+    "Golem":           [0x01B379, 0], "Minotaur":       [0x01B379, 1],
+    "White Dragon":    [0x01B37A, 0], "Triton":         [0x01B37A, 1],
+    "Gorgon":          [0x01B37B, 0], "Quezlcoatl":     [0x01B37B, 1],
+    "Red Crow":        [0x01B37C, 0], "Dead Crusader":  [0x01B37C, 1],
+    "Bael":            [0x01B37D, 0], "Lilith":         [0x01B37D, 1],
+    "Ghost Dancer":    [0x01B37E, 0], "Stolas":         [0x01B37E, 1],
+                                      "Gremlin":        [0x01B37F, 1]
 }
 
-function has_all_souls(souls) {
+yellow_copy_offset = 18
+
+function has_all_souls(souls, copy_offset) {
     cond = always_true()
     for soul in souls {
-        cond = cond && souls[soul] >= 1
+        if (souls[soul][1] == 0) {
+            cond = cond && (high4(souls[soul][0]) + high4(souls[soul][0] + copy_offset)) >= 1
+        } else {
+            cond = cond && (low4(souls[soul][0]) + low4(souls[soul][0] + copy_offset)) >= 1
+        }
     }
     return cond
 }
 
-function just_got_all_souls(souls) {
+function just_got_all_souls(souls, copy_offset) {
     prev_cond = always_false()
     for soul in souls {
-        prev_cond = prev_cond || repeated(120, souls[soul] == 0)
+        if (souls[soul][1] == 0) {
+            prev_cond = prev_cond || (prev(high4(souls[soul][0]))
+                                      + prev(high4(souls[soul][0] + copy_offset))) == 0
+        } else {
+            prev_cond = prev_cond || (prev(low4(souls[soul][0]))
+                                      + prev(low4(souls[soul][0] + copy_offset))) == 0
+        }
     }
-    return has_all_souls(souls) && prev_cond
+    return has_all_souls(souls, copy_offset) && prev_cond
 }
 
-function just_got_all_red_souls()    => just_got_all_souls(red_souls)
-function just_got_all_blue_souls()   => just_got_all_souls(blue_souls)
-function just_got_all_yellow_souls() => just_got_all_souls(yellow_souls)
+function just_got_all_red_souls()    => just_got_all_souls(red_souls, red_copy_offset)
+function just_got_all_blue_souls()   => just_got_all_souls(blue_souls, blue_copy_offset)
+function just_got_all_yellow_souls() => just_got_all_souls(yellow_souls, yellow_copy_offset)
 
 // Ticket 22128: I restarted the game in Hard mode, bringing all the souls I had already caught in the other journey. I
 //               took all the souls, not only the yellow ones, but also the blue and red ones, but I didn't get any of
