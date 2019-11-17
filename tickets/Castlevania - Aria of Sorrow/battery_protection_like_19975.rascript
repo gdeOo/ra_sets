@@ -1,10 +1,10 @@
 // Castlevania - Aria of Sorrow
 // #ID = 510
 
-// $01B27F: MAX HP high
-function max_hp_high() => byte(0x01B27F)
+// $01B1F8: LCK (status)
+function lck_stat() => byte(0x01b1f8)
 
-function never_not_in_game() => never(prev(max_hp_high()) == 0)
+function never_not_in_game() => never(prev(lck_stat()) == 0)
 
 achievement(
     title = "Backdash", description = "Obtained Grave Keeper Ability", points = 5,
@@ -140,14 +140,6 @@ achievement(
     id = 3085, badge = "03569", published = "10/1/2013 5:38:03 AM", modified = "10/17/2018 3:39:04 AM",
     trigger =
         bit0(0x01B3AE) > prev(bit0(0x01B3AE))
-        && never_not_in_game()
-)
-
-achievement(
-    title = "That Was Easy", description = "Obtain Your 1st Soul", points = 1,
-    id = 3086, badge = "03570", published = "10/1/2013 6:16:30 AM", modified = "7/29/2019 10:05:10 PM",
-    trigger =
-        bit0(0x01B31C) > prev(bit0(0x01B31C))
         && never_not_in_game()
 )
 
