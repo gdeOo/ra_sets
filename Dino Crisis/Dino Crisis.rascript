@@ -1,6 +1,42 @@
 // Dino Crisis
 // #ID = 11318
 
+// -------------------------------------------
+//   R E G I O N   C O M P A T I B I L I T Y
+// -------------------------------------------
+
+// The set was developed using the original USA version
+// (not Rev 1 / Greatest Hits).
+//
+// Literally every other version of the game has incompatible memory.
+//
+// For non-Japan versions (eur, fr, de, it, sp and usa rev 1), all memory
+// addresses are offset by the same amount, except for the debriefing-related
+// addresses, which are offset by a different amount). These versions
+// could be supported, though at a huge cost for code readability.
+//
+// The Japan version has different "padding", meaning that the offset relative
+// to the USA version increases as we progress in memory. Supporting this
+// version would be much more troublesome, since most memory addresses would
+// have to be individually checked.
+
+// each region is a list of (addr, offset) tuple, ordered by ascending addr,
+// each of which means that the offset should be applied to addresses under
+// addr (0x0 means until the end). for example:
+//   [[0xef3b0,  0x04a8],  -> apply 0x04a8 offset for addresses < 0xef3b0
+//    [0x00000, -0x03f0]]  -> apply -0x03f0 offset for all addresses >= 0xef3b0
+region_offsets = {
+    "Europe":      [[0xef3b0,  0x04a8], [0x00000, -0x03f0]],
+    "France":      [[0xef3b0, -0x74e8], [0x00000,  0x0e70]],
+    "Germany":     [[0xef3b0, -0x76a0], [0x00000,  0x0f90]],
+    "Italy":       [[0xef3b0, -0x8084], [0x00000,  0x0ff0]],
+    "Spain":       [[0xef3b0, -0x7648], [0x00000,  0x0e48]],
+    "USA (Rev 1)": [[0xef3b0, -0x01d0], [0x00000, -0x03f0]],
+    
+    // Japan version is undermapped, the boundaries would have to be adjusted
+    "Japan":       [[0xb7a48, -0xb208], [0xc6103, -0xb398], [0xc7c42, -0xb3a0], [0x00000, -0xb39f]]
+}
+
 // -------------
 //   U T I L S
 // -------------
@@ -1315,8 +1351,8 @@ crane_puzzle_container__flags = {    // [0,0] is top left
         [bit6(0xc15cd), bit2(0xc15ce), bit6(0xc15ce), bit2(0xc15cf), bit6(0xc15cf)],
         [bit5(0xc15cd), bit1(0xc15ce), bit5(0xc15ce), bit1(0xc15cf), bit5(0xc15cf)],
         [bit4(0xc15cd),             0, bit4(0xc15ce), bit0(0xc15cf), bit4(0xc15cf)]
-                        // for some weird reason the container at this position is always there and
-                        // has no bitflag... doesnt happen for any other container
+                        // the container at this position is always there and has no bitflag...
+                        // because the bit is used to remember if the crane is holding a container
     ]
 }
 
@@ -1805,7 +1841,7 @@ function pipe_puzzle_interleaved_left_and_right_pipes() {
 
 achievement(
     title="And That's How T-Rex to SM Odyssey [m]",
-    description="Restore power to the Large Size Elevator without operating consoles on the same side twice in a row (WIP)",
+    description="Restore power to the Large Size Elevator without operating consoles on the same side twice in a row",
     points=5,
     trigger=(
         story_common_trigger()
@@ -2018,7 +2054,7 @@ achievement(
 
 achievement(
     title="I'll Take Them All Out One By One [m]",
-    description="Take Gail literally and kill all 8 Raptors on your way out of the Research Area [Choice 2: Gail]",
+    description="Take Gail literally and kill all 8 Velociraptors on your way out of the Research Area [Choice 2: Gail]",
     points=5,
     trigger=(
         story_common_trigger()
@@ -2227,7 +2263,7 @@ achievement(
 )
 
 achievement(
-    title="I'm Chillin', Tryna Stack These Hexagons [m]",
+    title="I'm Chillin', Tryna Stack These Hexillions [m]",
     description="Solve the stack puzzle in the Security Pass Room in no more than 8 moves",
     points=5,
     trigger=(
