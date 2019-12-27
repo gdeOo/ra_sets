@@ -93,6 +93,20 @@ mode_id__values = {
 function in_mode(name) => mode_id__mem == mode_id__values[name]
 function game_over() => in_mode("Game Over")
 
+mission_stage__addr = 0xb7a2a
+mission_stage__mem = byte(mission_stage__addr)
+mission_stage__values = {
+    "Pre Heliport CG":         0x00,
+    "In/Post Heliport CG":     0x01,
+    "In Gail's Bad Ending CG": 0x02,
+    "In Rick's Bad Ending CG": 0x03,
+    "In Best Ending CG":       0x04,
+    "Post Ending CG":          0x05
+}
+
+function in_ending() => mission_stage__mem > mission_stage__values["In/Post Heliport CG"]
+function in_post_ending_cg() => mission_stage__mem == mission_stage__values["Post Ending CG"]
+
 cur_ending__addr = 0xb7a5b
 cur_ending__mem = byte(cur_ending__addr)
 cur_ending__values = { "Gail's Bad Ending": 0, "Rick's Bad Ending": 1, "Best Ending": 2 }
@@ -123,6 +137,8 @@ room_id__mem = byte(room_id__addr)
 floor_id__addr = 0xc14c1
 floor_id__mem = byte(floor_id__addr)
 
+room_floor_id__mem = word(room_id__addr)
+
 num_saves__addr = 0xc14c3
 num_saves__mem = byte(num_saves__addr)
 
@@ -148,13 +164,15 @@ endings_viewed__flags = {
     "Best Ending":       bit0(endings_viewed__addr)
 }
 
-function viewed_n_endings(n) {
+function viewed_endings() {
     total = 0
     for ending in endings_viewed__flags {
         total = total + endings_viewed__flags[ending]
     }
-    return total == n
+    return total
 }
+
+function viewed_n_endings(n) => viewed_endings() == n
 
 function just_reached_n_endings_viewed(n) {
     prev_total = 0
@@ -694,6 +712,7 @@ floor_room__values = {
     "Piping Check Passageway B 1F":                         [1, 17],
     "The Backyard":                                         [1, 18],
     "Elevator Hall":                                        [1, 19],
+    "Passageway to the Backup Generator (Raptor Alt)":      [1, 20],
     
     "Communication Antenna Room":                           [2, 0],
     "Passageway to the Communication Area":                 [2, 1],
@@ -1524,6 +1543,11 @@ debriefing_stage__values = {
     "Save":                     0x07
 }
 
+function in_debriefing() {
+    return in_post_ending_cg()
+           && (debriefing_step__mem + debriefing_sub_step__mem + debriefing_sub_sub_step__mem) > 0
+}
+
 function in_debriefing_stage(name) => debriefing_stage__mem == debriefing_stage__values[name]
 
 function debriefing_final_stats_just_started() {
@@ -1586,6 +1610,16 @@ op_wipeout_timers_max = {
 }
 op_wipeout_all_missions_time_max = 12 * 60 * 30
 
+function op_wipeout_ingame_mission(mission_name) {
+    return op_wipeout_in_stage(mission_name)
+           && op_wipeout_timers__mem[mission_name] != 0
+}
+
+function op_wipeout_ingame() {
+    return op_wipeout_ingame_mission("Mission 1")
+           || op_wipeout_ingame_mission("Mission 2")
+           || op_wipeout_ingame_mission("Mission 3")
+}
 
 function op_wipeout_total_remaining_time() {
     val = 0
@@ -2711,4 +2745,194 @@ achievement(
         && debriefing_final_stats_just_started()  // trigger only at the end of the debriefing
         && never(in_main_menu())                  // forget the ending in the main menu
     )
+)
+
+//=========================================//
+//                                         //
+//        R I C H   P R E S E N C E        //
+//                                         //
+//=========================================//
+
+// ---------------------------
+//   M A I N   M E N U   R P
+// ---------------------------
+
+rich_presence_conditional_display(
+    in_main_menu(),
+    "Regina is getting ready for her next assignment"
+)
+
+// -----------------------------
+//   D E B R I E F I N G   R P
+// -----------------------------
+
+rp_difficulty_lookup = rich_presence_lookup(
+    "Difficulty",
+    game_mode__mem,
+    { 0: "Normal", 1: "Easy" },
+    "??"
+)
+
+rp_time_value = rich_presence_value("Time", timer__mem / 60, "SECS")
+rp_continues_value = rich_presence_value("Continues", 5 - num_continues__mem)
+rp_saves_value = rich_presence_value("Saves", num_saves__mem)
+rp_endings_value = rich_presence_value("Endings", viewed_endings())
+
+rich_presence_conditional_display(
+    in_debriefing(),
+    "Regina is being debriefed | {0} | {1} | {2} Continues | {3} Saves | {4}/3 Endings",
+    rp_difficulty_lookup,
+    rp_time_value,
+    rp_continues_value,
+    rp_saves_value,
+    rp_endings_value
+)
+
+// -------------------------------------------
+//   O P E R A T I O N   W I P E O U T   R P
+// -------------------------------------------
+
+rp_op_wipeout_stage_lookup = rich_presence_lookup(
+    "OpWipeoutStage",
+    op_wipeout_stage__mem,
+    { 0: "Mission 1", 1: "Mission 2", 2: "Mission 3" },
+    ""
+)
+
+rich_presence_conditional_display(
+    in_operation_wipeout() && op_wipeout_in_stage("Ending"),
+    "Regina has completed Operation Wipeout"
+)
+
+rich_presence_conditional_display(
+    in_operation_wipeout() && op_wipeout_ingame(),
+    "Regina is in {0} of Operation Wipeout",
+    rp_op_wipeout_stage_lookup
+)
+
+rich_presence_conditional_display(
+    in_operation_wipeout(),
+    "Regina is getting ready to tackle {0} of Operation Wipeout",
+    rp_op_wipeout_stage_lookup
+)
+
+// -----------------------
+//   I N - G A M E   R P
+// -----------------------
+
+rp_location_lookup = rich_presence_lookup(
+    "Location",
+    room_floor_id__mem,
+    {
+        0x0100: "Locker Room",
+        0x0101: "Toilet",
+        0x0102: "Management Office Hallway",
+        0x0103: "Management Office",
+        0x0104: "Strategy Room",
+        0x0105: "Control Room Hall",
+        0x0106: "Control Room",
+        0x0107: "Main Entrance 1F",
+        0x0108: "Lecture Room Hallway",
+        0x0109: "Lecture Room",
+        0x010a: "Office Hallway",
+        0x010b: "Office",
+        0x010c: "Material Storage",
+        0x010d: "Backyard of the Facility",
+        0x010e: "Passageway to the Backup Generator",
+        0x010f: "Backup Generator Room 1F",
+        0x0110: "Piping Check Passageway A 1F",
+        0x0111: "Piping Check Passageway B 1F",
+        0x0112: "The Backyard",
+        0x0113: "Elevator Hall",
+        0x0114: "Passageway to the Backup Generator",
+
+        0x0200: "Communication Antenna Room",
+        0x0201: "Passageway to the Communication Area",
+        0x0202: "Chief's Office",
+        0x0203: "Hall F2",
+        0x0204: "Lounge",
+        0x0205: "Communication Room",
+        0x0206: "Main Entrance 2F",
+
+        0x0300: "Experiment Simulation Room",
+        0x0301: "Research Area Hall",
+        0x0302: "Research Meeting Room",
+        0x0303: "Gas Experiment Room",
+        0x0304: "Computer Room",
+        0x0305: "Library Room",
+        0x0306: "Main Hallway B1",
+        0x0307: "Medical Room Hallway",
+        0x0308: "Medical Room",
+        0x0309: "Hall B1",
+        0x030a: "Hallway for Carrying in Materials",
+        0x030b: "Backup Generator Room B1",
+        0x030c: "Carrying Out Room B1",
+        0x030d: "Hallway for Carrying in Materials",
+        0x030e: "Hall B1",
+    
+        0x0400: "Front Area of Entrance",
+        0x0401: "Passageway to the Heliport",
+        0x0402: "Hangar",
+        0x0403: "Heliport",
+        0x0404: "Large Size Elevator Passageway",
+        0x0405: "Large Size Elevator",
+        0x0406: "Large Size Elevator Control Room",
+        0x0407: "Passageway to the Power Room",
+        0x0408: "Elevator Power Room",
+        0x0409: "Liaison Elevator No. 2",
+        0x040a: "Underground Passageway to the Facility",
+        0x040b: "Materials Room",
+        0x040c: "Liaison Elevator No. 1",
+        0x040d: "Heliport",
+    
+        0x0500: "Passageway to the Experiment Area",
+        0x0501: "Piping Check Passageway B2",
+        0x0502: "Experiment Room Hall",
+        0x0503: "Stabilizer Experiment Room",
+        0x0504: "Stabilizer Design Room",
+        0x0505: "Researcher Rest Room",
+        0x0506: "Security Pass Room",
+        0x0507: "Parts Storage",
+        0x0508: "Passageway",
+        0x0509: "Third Energy Area B2",
+        0x050a: "Third Energy Area B3",
+        0x050b: "Third Energy Control Room",
+        0x050c: "Power Frequency Room",
+        0x050d: "Passageway to Personal Lab",
+        0x050e: "Dr. Kirk's Personal Lab",
+        0x050f: "Dr. Kirk's Library Room",
+        0x0510: "Third Energy Control Room",
+        0x0511: "Stabilizer Experiment Room",
+    
+        0x0600: "Carrying Out Room B3",
+        0x0601: "Backup Generator Room B3",
+        0x0602: "Control Room B3",
+        0x0603: "Passageway to the Carrying Out Room",
+        0x0604: "Rest Station",
+        0x0605: "General Weapons Store",
+        0x0606: "Transport Passageway",
+        0x0607: "Special Weapons Storage",
+        0x0608: "Central Stairway",
+        0x0609: "Disembarkation Immigration Office",
+        0x060a: "Port",
+        0x060b: "Passageway to the Port",
+        0x060c: "Channel",
+        0x060d: "Underground Heliport",
+        0x060e: "Elevator",
+        0x060f: "Large Size Elevator",
+        0x0610: "Hovercraft Storage",
+        0x0611: "Heliport Transport Passageway",
+        0x0612: "Hovercraft",
+        0x0613: "Port",
+        0x0614: "Port Transport Passageway",
+        0x0615: "General Weapons Store",
+    },
+    "parts unknown"
+)
+
+rich_presence_display(
+    "Regina is in {0} | {1} | {2}",
+    rp_location_lookup,
+    rp_difficulty_lookup,
+    rp_time_value
 )
