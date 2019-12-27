@@ -1548,11 +1548,19 @@ function in_debriefing() {
            && (debriefing_step__mem + debriefing_sub_step__mem + debriefing_sub_sub_step__mem) > 0
 }
 
-function in_debriefing_stage(name) => debriefing_stage__mem == debriefing_stage__values[name]
+function in_debriefing_stage(name) {
+    return in_post_ending_cg()
+           && debriefing_stage__mem == debriefing_stage__values[name]
+}
 
 function debriefing_final_stats_just_started() {
     return in_debriefing_stage("Debriefing")
            && just_changed(debriefing_step__mem, 1, 2)
+}
+
+function debriefing_final_stats_just_ended() {
+    // important: not general; only works in the context of the final stats screen
+    return in_post_ending_cg() && just_changed_from(debriefing_step__mem, 2)
 }
 
 function debriefing_unlocking_costumes() {
@@ -1619,6 +1627,11 @@ function op_wipeout_ingame() {
     return op_wipeout_ingame_mission("Mission 1")
            || op_wipeout_ingame_mission("Mission 2")
            || op_wipeout_ingame_mission("Mission 3")
+}
+
+function op_wipeout_mission_just_started(mission_name) {
+    return op_wipeout_in_stage(mission_name)
+           && just_changed_to(op_wipeout_timers__mem[mission_name], op_wipeout_timers_max[mission_name])
 }
 
 function op_wipeout_total_remaining_time() {
@@ -2713,7 +2726,8 @@ achievement(
     description="Complete Operation Wipeout in less than 8 minutes and 30 seconds",
     points=5,
     trigger=(
-        op_wipeout_in_stage("Ending")
+        in_operation_wipeout()
+        && op_wipeout_in_stage("Ending")
         //&& op_wipeout_total_time_le(8, 30)  // using the 3 real timers is not possible because the game
                                               // rounds each of them up and them sums to obtain the final
                                               // time, which is impossible to do in the toolkit
@@ -2935,4 +2949,88 @@ rich_presence_display(
     rp_location_lookup,
     rp_difficulty_lookup,
     rp_time_value
+)
+
+
+//=======================================//
+//                                       //
+//        L E A D E R B O A R D S        //
+//                                       //
+//=======================================//
+
+function lb_test(desc, start_trigger) {
+    achievement(title=desc, description=desc, points=0, trigger=start_trigger)
+}
+function lb_test_start(trigger) { lb_test("LB Test Start", trigger) }
+function lb_test_cancel(trigger) { lb_test("LB Test Cancel", trigger) }
+function lb_test_submit(trigger) { lb_test("LB Test Submit", trigger) }
+
+// ---------------------------
+//   M A I N   M I S S I O N
+// ---------------------------
+
+leaderboard(
+    title="Speedrun",
+    description="Complete the assignment in the lowest time possible",
+    start=story_common_trigger() && debriefing_final_stats_just_started(),
+    cancel=!in_debriefing(),
+    submit=debriefing_final_stats_just_ended(),
+    value=timer__mem / 60,
+    format="SECS"
+)
+
+// -------------------------------------
+//   O P E R A T I O N   W I P E O U T
+// -------------------------------------
+
+function op_wipeout_lb_start_trigger(mission_name) {
+    return in_operation_wipeout() && op_wipeout_mission_just_started(mission_name)
+}
+
+function op_wipeout_lb_cancel_trigger() => !in_operation_wipeout() || game_over()
+
+function op_wipeout_lb_submit_trigger(mission_name, next_stage) {
+    return op_wipeout_stage_just_changed(mission_name, next_stage)
+}
+
+function op_wipeout_lb_value(mission_name) => op_wipeout_timers__mem[mission_name] / 30
+
+leaderboard(
+    title="Wipeout Mission 1 Speedrun",
+    description="Complete Mission 1 of Operation Wipeout with as much time remaining as possible",
+    start=op_wipeout_lb_start_trigger("Mission 1"),
+    cancel=op_wipeout_lb_cancel_trigger(),
+    submit=op_wipeout_lb_submit_trigger("Mission 1", "Mission 2"),
+    value=op_wipeout_lb_value("Mission 1"),
+    format="SECS"
+)
+
+leaderboard(
+    title="Wipeout Mission 2 Speedrun",
+    description="Complete Mission 2 of Operation Wipeout with as much time remaining as possible",
+    start=op_wipeout_lb_start_trigger("Mission 2"),
+    cancel=op_wipeout_lb_cancel_trigger(),
+    submit=op_wipeout_lb_submit_trigger("Mission 2", "Mission 3"),
+    value=op_wipeout_lb_value("Mission 2"),
+    format="SECS"
+)
+
+leaderboard(
+    title="Wipeout Mission 3 Speedrun",
+    description="Complete Mission 3 of Operation Wipeout with as much time remaining as possible",
+    start=op_wipeout_lb_start_trigger("Mission 3"),
+    cancel=op_wipeout_lb_cancel_trigger(),
+    submit=op_wipeout_lb_submit_trigger("Mission 3", "Ending"),
+    value=op_wipeout_lb_value("Mission 3"),
+    format="SECS"
+)
+
+leaderboard(
+    title="Operation Wipeout Speedrun",
+    description="Complete Operation Wipeout with as much time remaining as possible",
+    start=in_operation_wipeout() && op_wipeout_in_stage("Ending"),
+    cancel=!in_operation_wipeout(),
+    submit=just_changed_from(op_wipeout_stage__mem, op_wipeout_stage__values["Ending"]),
+    value=op_wipeout_lb_value("Mission 1") + op_wipeout_lb_value("Mission 2") + op_wipeout_lb_value("Mission 3"),
+    format="SECS"
 )
