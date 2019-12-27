@@ -458,7 +458,7 @@ items__flags = {
     "Entrance Key":                     bit6(0xc15ad),
     "Small Size Key":                   bit5(0xc15ad),
     "Locker Room Key":                  bit4(0xc15ad),
-    "Plug":                             bit3(0xc15ad),  // TODO: quantity. just setting this makes quantity = 0
+    "Plug":                             bit3(0xc15ad),
     // nothing                          bit2(0xc15ad),
     // nothing                          bit1(0xc15ad),
     // nothing                          bit0(0xc15ad),    
@@ -616,19 +616,6 @@ function just_mixed(name) {
            && mixing_screen__mem == mixing_screen__values["Mixing Success"]
            && mixing_num_selected_supplies__mem == 2
 }
-
-// TODO: what are these?
-// Max Item Box Modifier Codes
-// Slot 1  800C1744 FF??
-// Slot 2  800C1748 FF??
-// Slot 3  800C174C FF??
-// Slot 4  800C1750 FF??
-// Slot 5  800C1754 FF??
-// Slot 6  800C1758 FF??
-// Slot 7  800C175C FF??
-// Slot 8  800C1760 FF??
-// Slot 9  800C1764 FF??
-// Slot 10 800C1768 FF??
 
 // -----------------------------
 //   O W N E D   W E A P O N S
@@ -1183,7 +1170,7 @@ misc_event__flags = {
     "Large Size Elevator Control Panel Online":          bit2(0xc1512),
     "Enable Crane Controls in Carrying Out Room B1":     bit0(0xc151b),
     "Shock Raptor in Hallway for Carrying in Materials": bit5(0xc1562),
-    "Crane Puzzle Completed":                            bit5(0xc1513),  // TODO: is this the same in rick's route??
+    "Crane Puzzle Completed":                            bit5(0xc1513),
     "Panel Opened in Computer Room":                     bit2(0xc1516),
     "Gassed Researcher in Gas Experiment Room":          bit6(0xc150a),
     "Gassed Raptor in Gas Experiment Room":              bit5(0xc1561),
@@ -1928,7 +1915,7 @@ achievement(
     )
 )
 
-// todo: works, but is super easy. review
+// works, but is super easy. review
 //achievement(
 //    title="What is This? A Dinosaur for Ants? [m]",
 //    description="Kill all the Compsognathus in Medical Room Hallway by shooting no more than 7 handgun bullets",
@@ -2024,7 +2011,7 @@ achievement(
 )
 
 achievement(
-    title="No Time for Small Talk [m]",  // WIP: For the Greater Good / A Small Price to Pay
+    title="No Time for Small Talk [m]",
     description="Get the B1 Key Chip without talking to the Researcher, shaving 30 seconds off your speedrun!",
     points=5,
     trigger=(
@@ -2606,7 +2593,7 @@ achievement(
 )
 
 achievement(
-    title="Should One-Shot Everything Now [m]",
+    title="Just Like That Movie [m]",
     description="Upgrade your shotgun into a SPAS-12 with a stock",
     points=5,
     trigger=(
@@ -2672,7 +2659,7 @@ achievement(
 )
 
 achievement(
-    title="Operation: Wipeout (WIP)",
+    title="Alternate Timeline",
     description="Unlock Operation Wipeout by beating the game in under 5 hours",
     points=5,
     trigger=(
@@ -2996,7 +2983,7 @@ function op_wipeout_lb_submit_trigger(mission_name, next_stage) {
 function op_wipeout_lb_value(mission_name) => op_wipeout_timers__mem[mission_name] / 30
 
 leaderboard(
-    title="Wipeout Mission 1 Speedrun",
+    title="Mission 1 Speedrun",
     description="Complete Mission 1 of Operation Wipeout with as much time remaining as possible",
     start=op_wipeout_lb_start_trigger("Mission 1"),
     cancel=op_wipeout_lb_cancel_trigger(),
@@ -3006,7 +2993,7 @@ leaderboard(
 )
 
 leaderboard(
-    title="Wipeout Mission 2 Speedrun",
+    title="Mission 2 Speedrun",
     description="Complete Mission 2 of Operation Wipeout with as much time remaining as possible",
     start=op_wipeout_lb_start_trigger("Mission 2"),
     cancel=op_wipeout_lb_cancel_trigger(),
@@ -3016,7 +3003,7 @@ leaderboard(
 )
 
 leaderboard(
-    title="Wipeout Mission 3 Speedrun",
+    title="Mission 3 Speedrun",
     description="Complete Mission 3 of Operation Wipeout with as much time remaining as possible",
     start=op_wipeout_lb_start_trigger("Mission 3"),
     cancel=op_wipeout_lb_cancel_trigger(),
