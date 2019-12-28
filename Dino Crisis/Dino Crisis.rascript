@@ -1768,7 +1768,7 @@ function never_not_in_rooms(names) {
 achievement(
     title="Rick, You're Not Gonna Believe This",
     description="Survive your first Velociraptor encounter",
-    points=2,
+    points=5,
     trigger=story_common_trigger()
             && in_room("Backyard of the Facility")
             && scoped_cutscene_just_ended("Rick comms after first Raptor encounter")
@@ -1777,7 +1777,7 @@ achievement(
 achievement(
     title="Locker Room Talk [m]",
     description="Get ambushed in the Locker Room, read the journal, grab the DDK Code Disk and escape without taking damage or killing the Velociraptor",
-    points=5,
+    points=10,
     trigger=(
         story_common_trigger()
         && never_not_in_room("Locker Room")                                   // reset if the player's not in the Locker Room
@@ -1795,7 +1795,7 @@ achievement(
 achievement(
     title="Oh, You've Got to Be Kidding Me [m]",
     description="Escape the T-Rex in the Chief's Office without shooting or taking damage",
-    points=5,
+    points=10,
     trigger=(
         story_common_trigger()
         && never_not_in_room("Chief's Office")
@@ -1876,7 +1876,7 @@ function pipe_puzzle_interleaved_left_and_right_pipes() {
 achievement(
     title="And That's How T-Rex to SM Odyssey [m]",
     description="Restore power to the Large Size Elevator without operating consoles on the same side twice in a row",
-    points=5,
+    points=10,
     trigger=(
         story_common_trigger()
         && in_room("Elevator Power Room")
@@ -1938,7 +1938,7 @@ function crane_puzzle_one_turn_with(n_cards) {
 achievement(
     title="Crainiac [m]",
     description="Solve the crane puzzle in Carrying Out Room B1 using no more than 6 moves",
-    points=5,
+    points=10,
     trigger=(
         story_common_trigger()
         && never_not_in_room("Carrying Out Room B1")
@@ -2013,7 +2013,7 @@ achievement(
 achievement(
     title="No Time for Small Talk [m]",
     description="Get the B1 Key Chip without talking to the Researcher, shaving 30 seconds off your speedrun!",
-    points=5,
+    points=10,
     trigger=(
         story_common_trigger()
         && in_room("Gas Experiment Room")
@@ -2041,7 +2041,7 @@ achievement(
 achievement(
     title="Medicine For a Good Samaritan [m]",
     description="Open one of the emergency cases in the Medical Room",
-    points=5,
+    points=10,
     trigger=(
         story_common_trigger()
         && in_room("Medical Room")
@@ -2089,7 +2089,7 @@ achievement(
 achievement(
     title="I'll Take Them All Out One By One [m]",
     description="Take Gail literally and kill all 8 Velociraptors on your way out of the Research Area [Choice 2: Gail]",
-    points=5,
+    points=10,
     trigger=(
         story_common_trigger()
         && chose_story_split("Split 2: Gail's Route")
@@ -2126,7 +2126,7 @@ achievement(
 achievement(
     title="I'm a Bit Busy Right Now [m]",
     description="Escape the T-Rex after activating the antenna without shooting or taking damage",
-    points=5,
+    points=10,
     trigger=(
         story_common_trigger()
         && scoped_cutscene_was_watched("T-Rex Attack in Passageway to the Communication Area")
@@ -2155,7 +2155,7 @@ achievement(
 achievement(
     title="In a Hurry [m]",
     description="Escape the T-Rex in the Heliport in under 30 seconds",
-    points=5,
+    points=10,
     trigger=(
         story_common_trigger()
 
@@ -2195,7 +2195,7 @@ achievement(
 achievement(
     title="300 IQ [m]",
     description="Solve the crane puzzle in General Weapons Store using no more than 15 moves",
-    points=5,
+    points=10,
     trigger=(
         story_common_trigger()
         && never_not_in_room("General Weapons Store (Post Crane Keys Alt)")
@@ -2235,7 +2235,7 @@ achievement(
 achievement(
     title="I Come In Peace [m]",
     description="Collect the B2 Key Chip 1 in the Security Pass Room without having ever triggered the alarm",
-    points=5,
+    points=25,
     trigger=(
         story_common_trigger()
         && in_room("Security Pass Room")
@@ -2264,7 +2264,7 @@ achievement(
 achievement(
     title="Am I Late? [m]",
     description="Get lost and miss the arrival of the T-Rex at level B3",
-    points=5,
+    points=10,
     trigger=(
         story_common_trigger()
         && in_room("Carrying Out Room B3")
@@ -2278,7 +2278,7 @@ achievement(
 achievement(
     title="Lost and Found [m]",
     description="Grab a weapon from the Large Size Elevator after the T-Rex electrocutes itself",
-    points=5,
+    points=25,
     trigger=(
         in_room("Large Size Elevator (Descending & B3)")
         && just_grabbed_dropped_weapon_in_room("Large Size Elevator (Descending & B3)")
@@ -2299,7 +2299,7 @@ achievement(
 achievement(
     title="I'm Chillin', Tryna Stack These Hexillions [m]",
     description="Solve the stack puzzle in the Security Pass Room in no more than 8 moves",
-    points=5,
+    points=10,
     trigger=(
         story_common_trigger()
         && in_room("Security Pass Room")
@@ -2349,7 +2349,7 @@ achievement(
 achievement(
     title="Dr. Regina, PhD",
     description="Steal the identity of Dr. Kirk himself",
-    points=5,
+    points=10,
     trigger=(
         story_common_trigger()
         && in_room("Security Pass Room")
@@ -2360,7 +2360,7 @@ achievement(
 achievement(
     title="DIY Third Energy Generator",
     description="Build the parts required to operate the Third Energy Generator yourself [Choice 3: Rick]",
-    points=5,
+    points=10,
     trigger=(
         story_common_trigger()
         && chose_story_split("Split 3: Rick's Route")
@@ -2372,7 +2372,7 @@ achievement(
 achievement(
     title="Off-The-Shelf Third Energy Generator",
     description="Grab ready-made parts for the Third Energy Generator [Choice 3: Gail]",
-    points=5,
+    points=10,
     trigger=(
         story_common_trigger()
         && chose_story_split("Split 3: Gail's Route")
@@ -2411,7 +2411,7 @@ achievement(
 achievement(
     title="Ooooo, Shiny! [m]",
     description="Grab an item during your final T-Rex encounter without doing a lap around the Port or shooting more than 6 times [Rick's Bad Ending]",
-    points=5,
+    points=10,
     trigger=(
         story_common_trigger()
         && once(just_entered_room("Port (T-Rex Fight)"))  // scope the cheevo to the whole fight
@@ -2437,7 +2437,7 @@ function ending_trigger(final_choice, ending) {
 achievement(
     title="Going Home Empty-Handed",
     description="Complete the assignment without accomplishing your mission [Rick's Bad Ending]",
-    points=5,
+    points=10,
     trigger=(
         story_common_trigger()
         && ending_trigger("Split 4: Rick's Route", "Rick's Bad Ending")
@@ -2462,7 +2462,7 @@ achievement(
 achievement(
     title="The Professional",
     description="Complete the assignment having accomplished its secret mission [Gail's Bad Ending]",
-    points=5,
+    points=10,
     trigger=(
         story_common_trigger()
         && ending_trigger("Split 4: Gail's Route", "Gail's Bad Ending")
@@ -2487,7 +2487,7 @@ achievement(
 achievement(
     title="By The Book",
     description="Complete the assignment having accomplished your mission with minimal casualties [Rick's Best Ending]",
-    points=5,
+    points=10,
     trigger=(
         story_common_trigger()
         && ending_trigger("Split 4: Rick's Route", "Best Ending")
@@ -2512,7 +2512,7 @@ achievement(
 achievement(
     title="Best Ending",
     description="Complete the assignment having (unknowingly) accomplished both missions with minimal casualties [Gail's Best Ending]",
-    points=5,
+    points=10,
     trigger=(
         story_common_trigger()
         && ending_trigger("Split 4: Gail's Route", "Best Ending")
@@ -2527,7 +2527,7 @@ achievement(
 achievement(
     title="Ultimate Final Boss [m]",
     description="Defeat the underground T-Rex without taking damage whilst employing minimal effort and resources [Any Best Ending]",
-    points=5,
+    points=10,
     trigger=(
         story_common_trigger()
         && in_room("Heliport Transport Passageway")
@@ -2615,7 +2615,7 @@ achievement(
 achievement(
     title="Master Alchemist [m]",
     description="Make a Poison Dart through mixing",
-    points=5,
+    points=10,
     trigger=(
         story_common_trigger()
         && just_mixed("Poison Dart")
@@ -2629,7 +2629,7 @@ achievement(
 achievement(
     title="I've Seen It All",
     description="Watch all 3 endings",
-    points=5,
+    points=25,
     trigger=(
         once(just_reached_n_endings_viewed(3))    // the total changes when the CG starts, so delay the trigger...
         && never(!viewed_n_endings(3))
@@ -2704,14 +2704,14 @@ achievement(
 achievement(
     title="Cretacious Extinction",
     description="Complete Mission 3 of Operation Wipeout",
-    points=5,
+    points=10,
     trigger=op_wipeout_stage_change_trigger("Mission 3", "Ending")
 )
 
 achievement(
     title="You're Extinct!",
     description="Complete Operation Wipeout in less than 8 minutes and 30 seconds",
-    points=5,
+    points=25,
     trigger=(
         in_operation_wipeout()
         && op_wipeout_in_stage("Ending")
@@ -2729,7 +2729,7 @@ achievement(
 achievement(
     title="No Weapon Run",
     description="Grab no weapons, leave the handgun on the LS Elevator, and beat the game w/o using any continues",
-    points=5,
+    points=50,
     trigger=(
         story_common_trigger()
 
