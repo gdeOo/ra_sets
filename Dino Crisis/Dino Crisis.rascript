@@ -3088,12 +3088,12 @@ function lb_test_submit(trigger) { lb_test("LB Test Submit", trigger) }
 
 leaderboard(
     title="Speedrun",
-    description="Complete the assignment in the lowest time possible",
+    description="Complete the assignment as fast as possible [Normal, No Inf GG]",
     start=story_common_trigger() && debriefing_final_stats_just_started(),
     cancel=!in_debriefing(),
     submit=debriefing_final_stats_just_ended(),
-    value=timer__mem / 60,
-    format="SECS"
+    value=timer__mem,
+    format="FRAMES"
 )
 
 // -------------------------------------
@@ -3110,44 +3110,44 @@ function op_wipeout_lb_submit_trigger(mission_name, next_stage) {
     return op_wipeout_stage_just_changed(mission_name, next_stage)
 }
 
-function op_wipeout_lb_value(mission_name) => op_wipeout_timers__mem[mission_name] / 30
+function op_wipeout_lb_value(mission_name) => op_wipeout_timers_max[mission_name] * 2 - op_wipeout_timers__mem[mission_name] * 2
 
 leaderboard(
     title="Mission 1 Speedrun",
-    description="Complete Mission 1 of Operation Wipeout with as much time remaining as possible",
+    description="Complete Mission 1 of Operation Wipeout as fast as possible",
     start=op_wipeout_lb_start_trigger("Mission 1"),
     cancel=op_wipeout_lb_cancel_trigger(),
     submit=op_wipeout_lb_submit_trigger("Mission 1", "Mission 2"),
     value=op_wipeout_lb_value("Mission 1"),
-    format="SECS"
+    format="FRAMES"
 )
 
 leaderboard(
     title="Mission 2 Speedrun",
-    description="Complete Mission 2 of Operation Wipeout with as much time remaining as possible",
+    description="Complete Mission 2 of Operation Wipeout as fast as possible",
     start=op_wipeout_lb_start_trigger("Mission 2"),
     cancel=op_wipeout_lb_cancel_trigger(),
     submit=op_wipeout_lb_submit_trigger("Mission 2", "Mission 3"),
     value=op_wipeout_lb_value("Mission 2"),
-    format="SECS"
+    format="FRAMES"
 )
 
 leaderboard(
     title="Mission 3 Speedrun",
-    description="Complete Mission 3 of Operation Wipeout with as much time remaining as possible",
+    description="Complete Mission 3 of Operation Wipeout as fast as possible",
     start=op_wipeout_lb_start_trigger("Mission 3"),
     cancel=op_wipeout_lb_cancel_trigger(),
     submit=op_wipeout_lb_submit_trigger("Mission 3", "Ending"),
     value=op_wipeout_lb_value("Mission 3"),
-    format="SECS"
+    format="FRAMES"
 )
 
 leaderboard(
     title="Operation Wipeout Speedrun",
-    description="Complete Operation Wipeout with as much time remaining as possible",
+    description="Complete Operation Wipeout as fast as possible",
     start=in_operation_wipeout() && op_wipeout_in_stage("Ending"),
     cancel=!in_operation_wipeout(),
     submit=just_changed_from(op_wipeout_stage__mem, op_wipeout_stage__values["Ending"]),
     value=op_wipeout_lb_value("Mission 1") + op_wipeout_lb_value("Mission 2") + op_wipeout_lb_value("Mission 3"),
-    format="SECS"
+    format="FRAMES"
 )
