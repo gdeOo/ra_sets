@@ -1766,6 +1766,8 @@ function never_not_in_rooms(names) {
 // ---------------
 
 achievement(
+    id=92411,
+    badge="101700",
     title="Rick, You're Not Gonna Believe This",
     description="Survive your first Velociraptor encounter",
     points=5,
@@ -1775,6 +1777,8 @@ achievement(
 )
 
 achievement(
+    id=92412,
+    badge="101701",
     title="Locker Room Talk [m]",
     description="Get ambushed in the Locker Room, read the journal, grab the DDK Code Disk and escape without taking damage or killing the Velociraptor",
     points=10,
@@ -1793,6 +1797,8 @@ achievement(
 )
 
 achievement(
+    id=92413,
+    badge="101702",
     title="Oh, You've Got to Be Kidding Me [m]",
     description="Escape the T-Rex in the Chief's Office without shooting or taking damage",
     points=10,
@@ -1807,6 +1813,8 @@ achievement(
 )
 
 achievement(
+    id=92414,
+    badge="101703",
     title="That's No Lizard, It's a Dinosaur!",
     description="When ambushed in the Lecture Room, perform the pre-historic QTE to summon Deus Ex Gail",
     points=5,
@@ -1816,6 +1824,8 @@ achievement(
 )
 
 achievement(
+    id=92415,
+    badge="101704",
     title="So, Do We Have Power Yet?",
     description="Turn on the power for the underground levels of the facility",
     points=5,
@@ -1826,6 +1836,8 @@ achievement(
 )
 
 achievement(
+    id=92416,
+    badge="101705",
     title="Dr. Regina, MSc",
     description="Steal the identity of an unfortunate Researcher",
     points=5,
@@ -1874,6 +1886,8 @@ function pipe_puzzle_interleaved_left_and_right_pipes() {
 }
 
 achievement(
+    id=92417,
+    badge="101706",
     title="And That's How T-Rex to SM Odyssey [m]",
     description="Restore power to the Large Size Elevator without operating consoles on the same side twice in a row",
     points=10,
@@ -1890,6 +1904,8 @@ achievement(
 )
 
 achievement(
+    id=92418,
+    badge="101707",
     title="Judge, Jury and Executioner [m]",
     description="After a Pteranodon attempts to turn you into a smoothie, execute his co-conspirator",
     points=5,
@@ -1904,6 +1920,8 @@ achievement(
 )
 
 achievement(
+    id=92419,
+    badge="101708",
     title="How Convenient [m]",
     description="Survive a strategically placed earthquake near the Large Size Elevator",
     points=5,
@@ -1936,6 +1954,8 @@ function crane_puzzle_one_turn_with(n_cards) {
 }
 
 achievement(
+    id=92420,
+    badge="101710",
     title="Crainiac [m]",
     description="Solve the crane puzzle in Carrying Out Room B1 using no more than 6 moves",
     points=10,
@@ -1960,6 +1980,8 @@ achievement(
 )
 
 achievement(
+    id=92421,
+    badge="101711",
     title="Comrade Tom",
     description="Follow the distress signal and locate your comrade [Choice 1: Rick]",
     points=5,
@@ -1972,6 +1994,8 @@ achievement(
 )
 
 achievement(
+    id=92422,
+    badge="101712",
     title="Farewell, We Hardly Knew Ye",
     description="Realize you just wasted your time and should have gone with Gail's plan [Choice 1: Rick]",
     points=5,
@@ -1984,6 +2008,8 @@ achievement(
 )
 
 achievement(
+    id=92423,
+    badge="101713",
     title="Dr. Kirk?",
     description="Get your first glimpse of the mission's target [Choice 1: Gail]",
     points=5,
@@ -2000,6 +2026,8 @@ achievement(
 // -----------------
 
 achievement(
+    id=92424,
+    badge="101714",
     title="Aggressive Elevator Pitch",
     description="Go on a dangerous elevator ride to reach the main area of Hall B1",
     points=5,
@@ -2011,6 +2039,8 @@ achievement(
 )
 
 achievement(
+    id=92425,
+    badge="101715",
     title="No Time for Small Talk [m]",
     description="Get the B1 Key Chip without talking to the Researcher, shaving 30 seconds off your speedrun!",
     points=10,
@@ -2024,6 +2054,8 @@ achievement(
 )
 
 achievement(
+    id=92427,
+    badge="101717",
     title="Ain't No Free Lunch [m]",
     description="Take a cruel revenge on the Velociraptor that ambushes you in the Gas Experiment Room",
     points=5,
@@ -2039,6 +2071,8 @@ achievement(
 )
 
 achievement(
+    id=92426,
+    badge="101716",
     title="Medicine For a Good Samaritan [m]",
     description="Open one of the emergency cases in the Medical Room",
     points=10,
@@ -2051,6 +2085,8 @@ achievement(
 )
 
 achievement(
+    id=92428,
+    badge="101718",
     title="Miniature Foreshadowing [m]",
     description="Activate the Third Energy Simulator",
     points=5,
@@ -2062,7 +2098,9 @@ achievement(
 )
 
 achievement(
-    title="It’s a Unix System! I Know This! [m]",
+    id=92429,
+    badge="101719",
+    title="It's a Unix System! I Know This! [m]",
     description="Successfully escape through the Experiment Simulation Room escape hatch [Choice 2: Rick]",
     points=5,
     trigger=(
@@ -2074,6 +2112,8 @@ achievement(
 )
 
 achievement(
+    id=92430,
+    badge="101720",
     title="The Code Did Not Matched [m]",
     description="Go with Gail's idea after failing your escape plan in the Experiment Simulation Room [Choice 2: Rick]",
     points=5,
@@ -2087,6 +2127,8 @@ achievement(
 )
 
 achievement(
+    id=92431,
+    badge="101721",
     title="I'll Take Them All Out One By One [m]",
     description="Take Gail literally and kill all 8 Velociraptors on your way out of the Research Area [Choice 2: Gail]",
     points=10,
@@ -2113,6 +2155,8 @@ achievement(
 // -------------------
 
 achievement(
+    id=92432,
+    badge="101722",
     title="You Can't Do This! I Have Rights!",
     description="Apprehend Dr. Kirk",
     points=5,
@@ -2124,6 +2168,8 @@ achievement(
 )
 
 achievement(
+    id=92433,
+    badge="101723",
     title="I'm a Bit Busy Right Now [m]",
     description="Escape the T-Rex after activating the antenna without shooting or taking damage",
     points=10,
@@ -2142,6 +2188,8 @@ function heliport_cg_just_ended() {
 }
 
 achievement(
+    id=92434,
+    badge="101724",
     title="What is That?!?!",
     description="Watch helplessly as that damn T-Rex destroys your ride home",
     points=5,
@@ -2153,6 +2201,8 @@ achievement(
 )
 
 achievement(
+    id=92435,
+    badge="101725",
     title="In a Hurry [m]",
     description="Escape the T-Rex in the Heliport in under 30 seconds",
     points=10,
@@ -2182,6 +2232,8 @@ achievement(
 )
 
 achievement(
+    id=92436,
+    badge="101726",
     title="Look at This Absolute Unit",
     description="Barely survive your first encounter with a Therizinosaurus",
     points=5,
@@ -2193,6 +2245,8 @@ achievement(
 )
 
 achievement(
+    id=92437,
+    badge="101727",
     title="300 IQ [m]",
     description="Solve the crane puzzle in General Weapons Store using no more than 15 moves",
     points=10,
@@ -2233,6 +2287,8 @@ achievement(
 )
 
 achievement(
+    id=92438,
+    badge="101728",
     title="I Come In Peace [m]",
     description="Collect the B2 Key Chip 1 in the Security Pass Room without having ever triggered the alarm",
     points=25,
@@ -2247,6 +2303,8 @@ achievement(
 )
 
 achievement(
+    id=92439,
+    badge="101729",
     title="Elevator T-Rex [m]",
     description="Witness a literal T-Rex come out of an elevator and electrocute itself",
     points=5,
@@ -2262,6 +2320,8 @@ achievement(
 )
 
 achievement(
+    id=92440,
+    badge="101730",
     title="Am I Late? [m]",
     description="Get lost and miss the arrival of the T-Rex at level B3",
     points=10,
@@ -2276,6 +2336,8 @@ achievement(
 )
 
 achievement(
+    id=92441,
+    badge="101731",
     title="Lost and Found [m]",
     description="Grab a weapon from the Large Size Elevator after the T-Rex electrocutes itself",
     points=25,
@@ -2286,6 +2348,8 @@ achievement(
 )
 
 achievement(
+    id=92442,
+    badge="101732",
     title="We'll Both End Up as Dino Droppings",
     description="Get denied your ride home once again",
     points=5,
@@ -2297,6 +2361,8 @@ achievement(
 )
 
 achievement(
+    id=92443,
+    badge="101733",
     title="I'm Chillin', Tryna Stack These Hexillions [m]",
     description="Solve the stack puzzle in the Security Pass Room in no more than 8 moves",
     points=10,
@@ -2314,6 +2380,8 @@ achievement(
 )
 
 achievement(
+    id=92444,
+    badge="101734",
     title="Password12345",
     description="Gain access to the Third Energy Generator using the world's most nascissistic password",
     points=5,
@@ -2325,6 +2393,8 @@ achievement(
 )
 
 achievement(
+    id=92445,
+    badge="101735",
     title="CSI Ibis Island [m]",
     description="Obtain Dr. Kirk's fingerprint before meeting him in his personal Lab",
     points=5,
@@ -2336,6 +2406,8 @@ achievement(
 )
 
 achievement(
+    id=92446,
+    badge="101736",
     title="Spoken Like a True Devil",
     description="Re-secure Dr. Kirk and listen to his villain speech",
     points=5,
@@ -2347,6 +2419,8 @@ achievement(
 )
 
 achievement(
+    id=92447,
+    badge="101737",
     title="Dr. Regina, PhD",
     description="Steal the identity of Dr. Kirk himself",
     points=10,
@@ -2358,6 +2432,8 @@ achievement(
 )
 
 achievement(
+    id=92448,
+    badge="101738",
     title="DIY Third Energy Generator",
     description="Build the parts required to operate the Third Energy Generator yourself [Choice 3: Rick]",
     points=10,
@@ -2370,6 +2446,8 @@ achievement(
 )
 
 achievement(
+    id=92449,
+    badge="101740",
     title="Off-The-Shelf Third Energy Generator",
     description="Grab ready-made parts for the Third Energy Generator [Choice 3: Gail]",
     points=10,
@@ -2386,6 +2464,8 @@ achievement(
 // -----------------
 
 achievement(
+    id=92450,
+    badge="101743",
     title="Let's Go Out With a Boom",
     description="Cause a Third Energy overload to clear your escape path",
     points=5,
@@ -2409,6 +2489,8 @@ achievement(
 // -----------------
 
 achievement(
+    id=92451,
+    badge="101745",
     title="Ooooo, Shiny! [m]",
     description="Grab an item during your final T-Rex encounter without doing a lap around the Port or shooting more than 6 times [Rick's Bad Ending]",
     points=10,
@@ -2435,6 +2517,8 @@ function ending_trigger(final_choice, ending) {
 }
 
 achievement(
+    id=92452,
+    badge="101747",
     title="Going Home Empty-Handed",
     description="Complete the assignment without accomplishing your mission [Rick's Bad Ending]",
     points=10,
@@ -2449,6 +2533,8 @@ achievement(
 // -----------------
 
 achievement(
+    id=92453,
+    badge="101749",
     title="What Do You Mean Our Real Mission?",
     description="Recapture Dr. Kirk and learn about your team's secret mission [Gail's Bad Ending]",
     points=5,
@@ -2460,6 +2546,8 @@ achievement(
 )
 
 achievement(
+    id=92454,
+    badge="101750",
     title="The Professional",
     description="Complete the assignment having accomplished its secret mission [Gail's Bad Ending]",
     points=10,
@@ -2474,6 +2562,8 @@ achievement(
 // ------------------
 
 achievement(
+    id=92455,
+    badge="101751",
     title="Fine, I'll Do It Myself",
     description="Send Rick and Gail to the Port and recapture Dr. Kirk yourself [Rick's Best Ending]",
     points=5,
@@ -2485,6 +2575,8 @@ achievement(
 )
 
 achievement(
+    id=92456,
+    badge="101752",
     title="By The Book",
     description="Complete the assignment having accomplished your mission with minimal casualties [Rick's Best Ending]",
     points=10,
@@ -2499,6 +2591,8 @@ achievement(
 // ------------------
 
 achievement(
+    id=92457,
+    badge="101753",
     title="Just a Quick Detour",
     description="Find an helicopter before going after Dr. Kirk [Gail's Best Ending]",
     points=5,
@@ -2510,6 +2604,8 @@ achievement(
 )
 
 achievement(
+    id=92458,
+    badge="101754",
     title="Best Ending",
     description="Complete the assignment having (unknowingly) accomplished both missions with minimal casualties [Gail's Best Ending]",
     points=10,
@@ -2525,6 +2621,8 @@ achievement(
 // -----------------
 
 achievement(
+    id=92459,
+    badge="101755",
     title="Ultimate Final Boss [m]",
     description="Defeat the underground T-Rex without taking damage whilst employing minimal effort and resources [Any Best Ending]",
     points=10,
@@ -2558,6 +2656,8 @@ achievement(
 // ---------------------
 
 achievement(
+    id=92460,
+    badge="101756",
     title="Should Have Packed One of These [m]",
     description="Obtain the Franchi PA3 Shotgun",
     points=5,
@@ -2569,6 +2669,8 @@ achievement(
 )
 
 achievement(
+    id=92461,
+    badge="101757",
     title="Make Dino Go Boom [m]",
     description="Obtain the 40mmHK Grenade Gun",
     points=5,
@@ -2583,6 +2685,8 @@ achievement(
 )
 
 achievement(
+    id=92462,
+    badge="101758",
     title="Thanks, I Still Hate It [m]",
     description="Upgrade your Glock 34 into a Glock 35 with a sight",
     points=5,
@@ -2593,6 +2697,8 @@ achievement(
 )
 
 achievement(
+    id=92463,
+    badge="101759",
     title="Just Like That Movie [m]",
     description="Upgrade your shotgun into a SPAS-12 with a stock",
     points=5,
@@ -2603,6 +2709,8 @@ achievement(
 )
 
 achievement(
+    id=92464,
+    badge="101760",
     title="Regina Custom [m]",
     description="Upgrade the grenade gun with a customization of Regina's authorship",
     points=5,
@@ -2613,6 +2721,8 @@ achievement(
 )
 
 achievement(
+    id=92465,
+    badge="101761",
     title="Master Alchemist [m]",
     description="Make a Poison Dart through mixing",
     points=10,
@@ -2627,6 +2737,8 @@ achievement(
 // -------------------------
 
 achievement(
+    id=92466,
+    badge="101762",
     title="I've Seen It All",
     description="Watch all 3 endings",
     points=25,
@@ -2638,6 +2750,8 @@ achievement(
 )
 
 achievement(
+    id=92467,
+    badge="101763",
     title="Say No to Matching Outfits",
     description="Unlock the Army Type and Battle Type costumes by beating the game",
     points=5,
@@ -2649,6 +2763,8 @@ achievement(
 )
 
 achievement(
+    id=92468,
+    badge="101764",
     title="Flinstones Cosplay",
     description="Unlock the Ancient Type costume by beating the game twice",
     points=5,
@@ -2659,6 +2775,8 @@ achievement(
 )
 
 achievement(
+    id=92469,
+    badge="101766",
     title="Alternate Timeline",
     description="Unlock Operation Wipeout by beating the game in under 5 hours",
     points=5,
@@ -2668,6 +2786,8 @@ achievement(
 )
 
 achievement(
+    id=92470,
+    badge="101767",
     title="Pre-Historic Tech",
     description="Shoot a grenade from a fish's mouth",
     points=5,
@@ -2688,6 +2808,8 @@ function op_wipeout_stage_change_trigger(from, to) {
 }
 
 achievement(
+    id=92471,
+    badge="101768",
     title="Triassic Extinction",
     description="Complete Mission 1 of Operation Wipeout",
     points=5,
@@ -2695,6 +2817,8 @@ achievement(
 )
 
 achievement(
+    id=92472,
+    badge="101769",
     title="Jurassic Extinction",
     description="Complete Mission 2 of Operation Wipeout",
     points=5,
@@ -2702,6 +2826,8 @@ achievement(
 )
 
 achievement(
+    id=92473,
+    badge="101770",
     title="Cretacious Extinction",
     description="Complete Mission 3 of Operation Wipeout",
     points=10,
@@ -2709,6 +2835,8 @@ achievement(
 )
 
 achievement(
+    id=92474,
+    badge="101771",
     title="You're Extinct!",
     description="Complete Operation Wipeout in less than 8 minutes and 30 seconds",
     points=25,
@@ -2727,8 +2855,10 @@ achievement(
 // -------------------------------
 
 achievement(
+    id=92475,
+    badge="101772",
     title="No Weapon Run",
-    description="Grab no weapons, leave the handgun on the LS Elevator, and beat the game w/o using any continues",
+    description="Grab no weapons, leave the handgun on the LS Elevator, and beat the game without using any continues",
     points=50,
     trigger=(
         story_common_trigger()
