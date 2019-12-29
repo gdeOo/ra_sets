@@ -1582,7 +1582,7 @@ function in_op_wipeout_alt() {
     return !cutscene_has_started("Opening (Part 1)")
 }
 
-in_op_wipeout__addr = 0xc1d01
+in_op_wipeout__addr = 0xc1d00
 in_op_wipeout__mem = byte(in_op_wipeout__addr)
 function in_operation_wipeout() => in_op_wipeout__mem == 0x01
 
