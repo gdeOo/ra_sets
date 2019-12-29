@@ -552,6 +552,8 @@ supplies__struct_sizeof = 4
 
 function supply_get_id(addr) => byte(addr + supplies__struct_fields["id"])
 
+function nth_supply_get_id(n) => supply_get_id(supplies__arr_addr + (n * supplies__struct_sizeof))
+
 supply_id__values = {
     "Shotgun":           0x01,
     "Shotgun Custom":    0x02,
@@ -588,6 +590,14 @@ supply_id__values = {
     "Recovery Aid":      0x21,
     "Intensifier":       0x22,
     "Multiplier":        0x23
+}
+
+function no_infinite_grenades() {
+    t = always_true()
+    for i in range(0, supplies__arr_size - 1) {
+        t = t && nth_supply_get_id(i) != supply_id__values["Infinite Grenades"]
+    }
+    return t
 }
 
 // ---------------
@@ -1732,7 +1742,7 @@ mm_time_to_demo__mem = word(mm_time_to_demo__addr)
 
 function story_common_trigger() {
     return in_game_mode("Normal")
-     // && other limitations: no inf grenade? ...
+           && no_infinite_grenades()
 }
 
 function scoped_cutscene_was_watched(name) {
@@ -1769,7 +1779,7 @@ achievement(
     id=92411,
     badge="101700",
     title="Rick, You're Not Gonna Believe This",
-    description="Survive your first Velociraptor encounter",
+    description="Survive your first Velociraptor encounter [Normal, No Inf GG]",
     points=5,
     trigger=story_common_trigger()
             && in_room("Backyard of the Facility")
@@ -1780,7 +1790,7 @@ achievement(
     id=92412,
     badge="101701",
     title="Locker Room Talk [m]",
-    description="Get ambushed in the Locker Room, read the journal, grab the DDK Code Disk and escape without taking damage or killing the Velociraptor",
+    description="Get ambushed in the Locker Room, read the journal, grab the DDK Code Disk and escape without taking damage or killing the Velociraptor [Normal, No Inf GG]",
     points=10,
     trigger=(
         story_common_trigger()
@@ -1800,7 +1810,7 @@ achievement(
     id=92413,
     badge="101702",
     title="Oh, You've Got to Be Kidding Me [m]",
-    description="Escape the T-Rex in the Chief's Office without shooting or taking damage",
+    description="Escape the T-Rex in the Chief's Office without shooting or taking damage [Normal, No Inf GG]",
     points=10,
     trigger=(
         story_common_trigger()
@@ -1816,7 +1826,7 @@ achievement(
     id=92414,
     badge="101703",
     title="That's No Lizard, It's a Dinosaur!",
-    description="When ambushed in the Lecture Room, perform the pre-historic QTE to summon Deus Ex Gail",
+    description="When ambushed in the Lecture Room, perform the pre-historic QTE to summon Deus Ex Gail [Normal, No Inf GG]",
     points=5,
     trigger=story_common_trigger()
             && in_room("Lecture Room")
@@ -1827,7 +1837,7 @@ achievement(
     id=92415,
     badge="101704",
     title="So, Do We Have Power Yet?",
-    description="Turn on the power for the underground levels of the facility",
+    description="Turn on the power for the underground levels of the facility [Normal, No Inf GG]",
     points=5,
     trigger=story_common_trigger()
             && in_room("Backup Generator Room B1")
@@ -1839,7 +1849,7 @@ achievement(
     id=92416,
     badge="101705",
     title="Dr. Regina, MSc",
-    description="Steal the identity of an unfortunate Researcher",
+    description="Steal the identity of an unfortunate Researcher [Normal, No Inf GG]",
     points=5,
     trigger=story_common_trigger()
             && in_room("Office")
@@ -1889,7 +1899,7 @@ achievement(
     id=92417,
     badge="101706",
     title="And That's How T-Rex to SM Odyssey [m]",
-    description="Restore power to the Large Size Elevator without operating consoles on the same side twice in a row",
+    description="Restore power to the Large Size Elevator without operating consoles on the same side twice in a row [Normal, No Inf GG]",
     points=10,
     trigger=(
         story_common_trigger()
@@ -1907,7 +1917,7 @@ achievement(
     id=92418,
     badge="101707",
     title="Judge, Jury and Executioner [m]",
-    description="After a Pteranodon attempts to turn you into a smoothie, execute his co-conspirator",
+    description="After a Pteranodon attempts to turn you into a smoothie, execute his co-conspirator [Normal, No Inf GG]",
     points=5,
     trigger=(
         story_common_trigger()
@@ -1923,7 +1933,7 @@ achievement(
     id=92419,
     badge="101708",
     title="How Convenient [m]",
-    description="Survive a strategically placed earthquake near the Large Size Elevator",
+    description="Survive a strategically placed earthquake near the Large Size Elevator [Normal, No Inf GG]",
     points=5,
     trigger=(
         story_common_trigger()
@@ -1957,7 +1967,7 @@ achievement(
     id=92420,
     badge="101710",
     title="Crainiac [m]",
-    description="Solve the crane puzzle in Carrying Out Room B1 using no more than 6 moves",
+    description="Solve the crane puzzle in Carrying Out Room B1 using no more than 6 moves [Normal, No Inf GG]",
     points=10,
     trigger=(
         story_common_trigger()
@@ -1983,7 +1993,7 @@ achievement(
     id=92421,
     badge="101711",
     title="Comrade Tom",
-    description="Follow the distress signal and locate your comrade [Choice 1: Rick]",
+    description="Follow the distress signal and locate your comrade [Choice 1: Rick] [Normal, No Inf GG]",
     points=5,
     trigger=(
         story_common_trigger()
@@ -1997,7 +2007,7 @@ achievement(
     id=92422,
     badge="101712",
     title="Farewell, We Hardly Knew Ye",
-    description="Realize you just wasted your time and should have gone with Gail's plan [Choice 1: Rick]",
+    description="Realize you just wasted your time and should have gone with Gail's plan [Choice 1: Rick] [Normal, No Inf GG]",
     points=5,
     trigger=(
         story_common_trigger()
@@ -2011,7 +2021,7 @@ achievement(
     id=92423,
     badge="101713",
     title="Dr. Kirk?",
-    description="Get your first glimpse of the mission's target [Choice 1: Gail]",
+    description="Get your first glimpse of the mission's target [Choice 1: Gail] [Normal, No Inf GG]",
     points=5,
     trigger=(
         story_common_trigger()
@@ -2029,7 +2039,7 @@ achievement(
     id=92424,
     badge="101714",
     title="Aggressive Elevator Pitch",
-    description="Go on a dangerous elevator ride to reach the main area of Hall B1",
+    description="Go on a dangerous elevator ride to reach the main area of Hall B1 [Normal, No Inf GG]",
     points=5,
     trigger=(
         story_common_trigger()
@@ -2042,7 +2052,7 @@ achievement(
     id=92425,
     badge="101715",
     title="No Time for Small Talk [m]",
-    description="Get the B1 Key Chip without talking to the Researcher, shaving 30 seconds off your speedrun!",
+    description="Get the B1 Key Chip without talking to the Researcher, shaving 30 seconds off your speedrun! [Normal, No Inf GG]",
     points=10,
     trigger=(
         story_common_trigger()
@@ -2057,7 +2067,7 @@ achievement(
     id=92427,
     badge="101717",
     title="Ain't No Free Lunch [m]",
-    description="Take a cruel revenge on the Velociraptor that ambushes you in the Gas Experiment Room",
+    description="Take a cruel revenge on the Velociraptor that ambushes you in the Gas Experiment Room [Normal, No Inf GG]",
     points=5,
     trigger=(
         story_common_trigger()
@@ -2074,7 +2084,7 @@ achievement(
     id=92426,
     badge="101716",
     title="Medicine For a Good Samaritan [m]",
-    description="Open one of the emergency cases in the Medical Room",
+    description="Open one of the emergency cases in the Medical Room [Normal, No Inf GG]",
     points=10,
     trigger=(
         story_common_trigger()
@@ -2088,7 +2098,7 @@ achievement(
     id=92428,
     badge="101718",
     title="Miniature Foreshadowing [m]",
-    description="Activate the Third Energy Simulator",
+    description="Activate the Third Energy Simulator [Normal, No Inf GG]",
     points=5,
     trigger=(
         story_common_trigger()
@@ -2101,7 +2111,7 @@ achievement(
     id=92429,
     badge="101719",
     title="It's a Unix System! I Know This! [m]",
-    description="Successfully escape through the Experiment Simulation Room escape hatch [Choice 2: Rick]",
+    description="Successfully escape through the Experiment Simulation Room escape hatch [Choice 2: Rick] [Normal, No Inf GG]",
     points=5,
     trigger=(
         story_common_trigger()
@@ -2115,7 +2125,7 @@ achievement(
     id=92430,
     badge="101720",
     title="The Code Did Not Matched [m]",
-    description="Go with Gail's idea after failing your escape plan in the Experiment Simulation Room [Choice 2: Rick]",
+    description="Go with Gail's idea after failing your escape plan in the Experiment Simulation Room [Choice 2: Rick] [Normal, No Inf GG]",
     points=5,
     trigger=(
         story_common_trigger()
@@ -2130,7 +2140,7 @@ achievement(
     id=92431,
     badge="101721",
     title="I'll Take Them All Out One By One [m]",
-    description="Take Gail literally and kill all 8 Velociraptors on your way out of the Research Area [Choice 2: Gail]",
+    description="Take Gail literally and kill all 8 Velociraptors on your way out of the Research Area [Choice 2: Gail] [Normal, No Inf GG]",
     points=10,
     trigger=(
         story_common_trigger()
@@ -2158,7 +2168,7 @@ achievement(
     id=92432,
     badge="101722",
     title="You Can't Do This! I Have Rights!",
-    description="Apprehend Dr. Kirk",
+    description="Apprehend Dr. Kirk [Normal, No Inf GG]",
     points=5,
     trigger=(
         story_common_trigger()
@@ -2171,7 +2181,7 @@ achievement(
     id=92433,
     badge="101723",
     title="I'm a Bit Busy Right Now [m]",
-    description="Escape the T-Rex after activating the antenna without shooting or taking damage",
+    description="Escape the T-Rex after activating the antenna without shooting or taking damage [Normal, No Inf GG]",
     points=10,
     trigger=(
         story_common_trigger()
@@ -2191,7 +2201,7 @@ achievement(
     id=92434,
     badge="101724",
     title="What is That?!?!",
-    description="Watch helplessly as that damn T-Rex destroys your ride home",
+    description="Watch helplessly as that damn T-Rex destroys your ride home [Normal, No Inf GG]",
     points=5,
     trigger=(
         story_common_trigger()
@@ -2204,7 +2214,7 @@ achievement(
     id=92435,
     badge="101725",
     title="In a Hurry [m]",
-    description="Escape the T-Rex in the Heliport in under 30 seconds",
+    description="Escape the T-Rex in the Heliport in under 30 seconds [Normal, No Inf GG]",
     points=10,
     trigger=(
         story_common_trigger()
@@ -2235,7 +2245,7 @@ achievement(
     id=92436,
     badge="101726",
     title="Look at This Absolute Unit",
-    description="Barely survive your first encounter with a Therizinosaurus",
+    description="Barely survive your first encounter with a Therizinosaurus [Normal, No Inf GG]",
     points=5,
     trigger=(
         story_common_trigger()
@@ -2248,7 +2258,7 @@ achievement(
     id=92437,
     badge="101727",
     title="300 IQ [m]",
-    description="Solve the crane puzzle in General Weapons Store using no more than 15 moves",
+    description="Solve the crane puzzle in General Weapons Store using no more than 15 moves [Normal, No Inf GG]",
     points=10,
     trigger=(
         story_common_trigger()
@@ -2290,7 +2300,7 @@ achievement(
     id=92438,
     badge="101728",
     title="I Come In Peace [m]",
-    description="Collect the B2 Key Chip 1 in the Security Pass Room without having ever triggered the alarm",
+    description="Collect the B2 Key Chip 1 in the Security Pass Room without having ever triggered the alarm [Normal, No Inf GG]",
     points=25,
     trigger=(
         story_common_trigger()
@@ -2306,7 +2316,7 @@ achievement(
     id=92439,
     badge="101729",
     title="Elevator T-Rex [m]",
-    description="Witness a literal T-Rex come out of an elevator and electrocute itself",
+    description="Witness a literal T-Rex come out of an elevator and electrocute itself [Normal, No Inf GG]",
     points=5,
     trigger=(
         story_common_trigger()
@@ -2323,7 +2333,7 @@ achievement(
     id=92440,
     badge="101730",
     title="Am I Late? [m]",
-    description="Get lost and miss the arrival of the T-Rex at level B3",
+    description="Get lost and miss the arrival of the T-Rex at level B3 [Normal, No Inf GG]",
     points=10,
     trigger=(
         story_common_trigger()
@@ -2339,10 +2349,11 @@ achievement(
     id=92441,
     badge="101731",
     title="Lost and Found [m]",
-    description="Grab a weapon from the Large Size Elevator after the T-Rex electrocutes itself",
+    description="Grab a weapon from the Large Size Elevator after the T-Rex electrocutes itself [Normal, No Inf GG]",
     points=25,
     trigger=(
-        in_room("Large Size Elevator (Descending & B3)")
+        story_common_trigger()
+        && in_room("Large Size Elevator (Descending & B3)")
         && just_grabbed_dropped_weapon_in_room("Large Size Elevator (Descending & B3)")
     )
 )
@@ -2351,7 +2362,7 @@ achievement(
     id=92442,
     badge="101732",
     title="We'll Both End Up as Dino Droppings",
-    description="Get denied your ride home once again",
+    description="Get denied your ride home once again [Normal, No Inf GG]",
     points=5,
     trigger=(
         story_common_trigger()
@@ -2364,7 +2375,7 @@ achievement(
     id=92443,
     badge="101733",
     title="I'm Chillin', Tryna Stack These Hexillions [m]",
-    description="Solve the stack puzzle in the Security Pass Room in no more than 8 moves",
+    description="Solve the stack puzzle in the Security Pass Room in no more than 8 moves [Normal, No Inf GG]",
     points=10,
     trigger=(
         story_common_trigger()
@@ -2383,7 +2394,7 @@ achievement(
     id=92444,
     badge="101734",
     title="Password12345",
-    description="Gain access to the Third Energy Generator using the world's most nascissistic password",
+    description="Gain access to the Third Energy Generator using the world's most nascissistic password [Normal, No Inf GG]",
     points=5,
     trigger=(
         story_common_trigger()
@@ -2396,7 +2407,7 @@ achievement(
     id=92445,
     badge="101735",
     title="CSI Ibis Island [m]",
-    description="Obtain Dr. Kirk's fingerprint before meeting him in his personal Lab",
+    description="Obtain Dr. Kirk's fingerprint before meeting him in his personal Lab [Normal, No Inf GG]",
     points=5,
     trigger=(
         story_common_trigger()
@@ -2409,7 +2420,7 @@ achievement(
     id=92446,
     badge="101736",
     title="Spoken Like a True Devil",
-    description="Re-secure Dr. Kirk and listen to his villain speech",
+    description="Re-secure Dr. Kirk and listen to his villain speech [Normal, No Inf GG]",
     points=5,
     trigger=(
         story_common_trigger()
@@ -2435,7 +2446,7 @@ achievement(
     id=92448,
     badge="101738",
     title="DIY Third Energy Generator",
-    description="Build the parts required to operate the Third Energy Generator yourself [Choice 3: Rick]",
+    description="Build the parts required to operate the Third Energy Generator yourself [Choice 3: Rick] [Normal, No Inf GG]",
     points=10,
     trigger=(
         story_common_trigger()
@@ -2449,7 +2460,7 @@ achievement(
     id=92449,
     badge="101740",
     title="Off-The-Shelf Third Energy Generator",
-    description="Grab ready-made parts for the Third Energy Generator [Choice 3: Gail]",
+    description="Grab ready-made parts for the Third Energy Generator [Choice 3: Gail] [Normal, No Inf GG]",
     points=10,
     trigger=(
         story_common_trigger()
@@ -2467,7 +2478,7 @@ achievement(
     id=92450,
     badge="101743",
     title="Let's Go Out With a Boom",
-    description="Cause a Third Energy overload to clear your escape path",
+    description="Cause a Third Energy overload to clear your escape path [Normal, No Inf GG]",
     points=5,
     trigger=(
         story_common_trigger()
@@ -2492,7 +2503,7 @@ achievement(
     id=92451,
     badge="101745",
     title="Ooooo, Shiny! [m]",
-    description="Grab an item during your final T-Rex encounter without doing a lap around the Port or shooting more than 6 times [Rick's Bad Ending]",
+    description="Grab an item during your final T-Rex encounter without doing a lap around the Port or shooting more than 6 times [Rick's Bad Ending] [Normal, No Inf GG]",
     points=10,
     trigger=(
         story_common_trigger()
@@ -2520,7 +2531,7 @@ achievement(
     id=92452,
     badge="101747",
     title="Going Home Empty-Handed",
-    description="Complete the assignment without accomplishing your mission [Rick's Bad Ending]",
+    description="Complete the assignment without accomplishing your mission [Rick's Bad Ending] [Normal, No Inf GG]",
     points=10,
     trigger=(
         story_common_trigger()
@@ -2536,7 +2547,7 @@ achievement(
     id=92453,
     badge="101749",
     title="What Do You Mean Our Real Mission?",
-    description="Recapture Dr. Kirk and learn about your team's secret mission [Gail's Bad Ending]",
+    description="Recapture Dr. Kirk and learn about your team's secret mission [Gail's Bad Ending] [Normal, No Inf GG]",
     points=5,
     trigger=(
         story_common_trigger()
@@ -2549,7 +2560,7 @@ achievement(
     id=92454,
     badge="101750",
     title="The Professional",
-    description="Complete the assignment having accomplished its secret mission [Gail's Bad Ending]",
+    description="Complete the assignment having accomplished its secret mission [Gail's Bad Ending] [Normal, No Inf GG]",
     points=10,
     trigger=(
         story_common_trigger()
@@ -2565,7 +2576,7 @@ achievement(
     id=92455,
     badge="101751",
     title="Fine, I'll Do It Myself",
-    description="Send Rick and Gail to the Port and recapture Dr. Kirk yourself [Rick's Best Ending]",
+    description="Send Rick and Gail to the Port and recapture Dr. Kirk yourself [Rick's Best Ending] [Normal, No Inf GG]",
     points=5,
     trigger=(
         story_common_trigger()
@@ -2578,7 +2589,7 @@ achievement(
     id=92456,
     badge="101752",
     title="By The Book",
-    description="Complete the assignment having accomplished your mission with minimal casualties [Rick's Best Ending]",
+    description="Complete the assignment having accomplished your mission with minimal casualties [Rick's Best Ending] [Normal, No Inf GG]",
     points=10,
     trigger=(
         story_common_trigger()
@@ -2594,7 +2605,7 @@ achievement(
     id=92457,
     badge="101753",
     title="Just a Quick Detour",
-    description="Find an helicopter before going after Dr. Kirk [Gail's Best Ending]",
+    description="Find an helicopter before going after Dr. Kirk [Gail's Best Ending] [Normal, No Inf GG]",
     points=5,
     trigger=(
         story_common_trigger()
@@ -2607,7 +2618,7 @@ achievement(
     id=92458,
     badge="101754",
     title="Best Ending",
-    description="Complete the assignment having (unknowingly) accomplished both missions with minimal casualties [Gail's Best Ending]",
+    description="Complete the assignment having (unknowingly) accomplished both missions with minimal casualties [Gail's Best Ending] [Normal, No Inf GG]",
     points=10,
     trigger=(
         story_common_trigger()
@@ -2624,7 +2635,7 @@ achievement(
     id=92459,
     badge="101755",
     title="Ultimate Final Boss [m]",
-    description="Defeat the underground T-Rex without taking damage whilst employing minimal effort and resources [Any Best Ending]",
+    description="Defeat the underground T-Rex without taking damage whilst employing minimal effort and resources [Any Best Ending] [Normal, No Inf GG]",
     points=10,
     trigger=(
         story_common_trigger()
@@ -2659,7 +2670,7 @@ achievement(
     id=92460,
     badge="101756",
     title="Should Have Packed One of These [m]",
-    description="Obtain the Franchi PA3 Shotgun",
+    description="Obtain the Franchi PA3 Shotgun [Normal, No Inf GG]",
     points=5,
     trigger=(
         story_common_trigger()
@@ -2672,7 +2683,7 @@ achievement(
     id=92461,
     badge="101757",
     title="Make Dino Go Boom [m]",
-    description="Obtain the 40mmHK Grenade Gun",
+    description="Obtain the 40mmHK Grenade Gun [Normal, No Inf GG]",
     points=5,
     trigger=(
         story_common_trigger()
@@ -2688,7 +2699,7 @@ achievement(
     id=92462,
     badge="101758",
     title="Thanks, I Still Hate It [m]",
-    description="Upgrade your Glock 34 into a Glock 35 with a sight",
+    description="Upgrade your Glock 34 into a Glock 35 with a sight [Normal, No Inf GG]",
     points=5,
     trigger=(
         story_common_trigger()
@@ -2700,7 +2711,7 @@ achievement(
     id=92463,
     badge="101759",
     title="Just Like That Movie [m]",
-    description="Upgrade your shotgun into a SPAS-12 with a stock",
+    description="Upgrade your shotgun into a SPAS-12 with a stock [Normal, No Inf GG]",
     points=5,
     trigger=(
         story_common_trigger()
@@ -2712,7 +2723,7 @@ achievement(
     id=92464,
     badge="101760",
     title="Regina Custom [m]",
-    description="Upgrade the grenade gun with a customization of Regina's authorship",
+    description="Upgrade the grenade gun with a customization of Regina's authorship [Normal, No Inf GG]",
     points=5,
     trigger=(
         story_common_trigger()
@@ -2724,7 +2735,7 @@ achievement(
     id=92465,
     badge="101761",
     title="Master Alchemist [m]",
-    description="Make a Poison Dart through mixing",
+    description="Make a Poison Dart through mixing [Normal, No Inf GG]",
     points=10,
     trigger=(
         story_common_trigger()
@@ -2858,7 +2869,7 @@ achievement(
     id=92475,
     badge="101772",
     title="No Weapon Run",
-    description="Grab no weapons, leave the handgun on the LS Elevator, and beat the game without using any continues",
+    description="Grab no weapons, leave the handgun on the LS Elevator, and beat the game without using any continues [Normal, No Inf GG]",
     points=50,
     trigger=(
         story_common_trigger()
