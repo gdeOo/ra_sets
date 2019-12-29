@@ -2064,6 +2064,20 @@ achievement(
 )
 
 achievement(
+    id=92426,
+    badge="101716",
+    title="Medicine For a Good Samaritan [m]",
+    description="Open one of the emergency cases in the Medical Room [Normal, No Inf GG]",
+    points=10,
+    trigger=(
+        story_common_trigger()
+        && in_room("Medical Room")
+        && (event_just_occurred("Left Emergency Case Opened in Medical Room")
+            || event_just_occurred("Right Emergency Case Opened in Medical Room"))
+    )
+)
+
+achievement(
     id=92427,
     badge="101717",
     title="Ain't No Free Lunch [m]",
@@ -2077,20 +2091,6 @@ achievement(
         && never(gas_puzzle_chamber_is_clear()     // and reset if the raptor leaves the chamber while it's clear
                  && !raptor_in_gas_chamber())
         && enemy_just_killed("Raptor (Gas Experiment Room)")  // in the current scope, the raptor can only be killed with gas
-    )
-)
-
-achievement(
-    id=92426,
-    badge="101716",
-    title="Medicine For a Good Samaritan [m]",
-    description="Open one of the emergency cases in the Medical Room [Normal, No Inf GG]",
-    points=10,
-    trigger=(
-        story_common_trigger()
-        && in_room("Medical Room")
-        && (event_just_occurred("Left Emergency Case Opened in Medical Room")
-            || event_just_occurred("Right Emergency Case Opened in Medical Room"))
     )
 )
 
