@@ -1898,7 +1898,7 @@ function pipe_puzzle_interleaved_left_and_right_pipes() {
 achievement(
     id=92417,
     badge="101706",
-    title="And That's How T-Rex to SM Odyssey [m]",
+    title="And That's How T-Rex Got to SM Odyssey [m]",
     description="Restore power to the Large Size Elevator without operating consoles on the same side twice in a row [Normal, No Inf GG]",
     points=10,
     trigger=(
