@@ -2337,7 +2337,7 @@ achievement(
     points=10,
     trigger=(
         story_common_trigger()
-        && in_room("Carrying Out Room B3")
+        && never_not_in_room("Carrying Out Room B3")
         && scoped_cutscene_just_ended("T-Rex Rides the Elevator and Eletrocutes Itself")
         // opposite of the other achievement related to this event
         && once(just_entered_room("Carrying Out Room B3"))
