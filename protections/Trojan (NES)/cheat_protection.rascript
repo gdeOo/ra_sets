@@ -31,8 +31,8 @@ function stage_id() => byte(0x0003D1)
 // $061F: DESARMADO
 function unarmed() => byte(0x00061F)
 
-function in_game() => byte(0x0300) == 0x01
-function was_in_game() => rev(byte(0x0300)) == 0x01
+function in_game() => byte(0x0300) != 0x00
+function was_in_game() => prev(byte(0x0300)) != 0x00
 function just_started_game() => !was_in_game() && in_game()
 
 function up_is_pressed() => bit3(0x07f4) == 1
