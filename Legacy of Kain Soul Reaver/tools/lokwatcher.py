@@ -338,6 +338,9 @@ def raziel_health_scale(mem):
 def raziel_health_balls(mem):
   return mem.read_short(to_real_ptr(raziel_field_ptr("HealthBalls")))
 
+def raziel_hit_points(mem):
+  return mem.read_uint(to_real_ptr(raziel_field_ptr("HitPoints")))
+
 def current_hit_real_addr(mem):
   inst = mem.read_uint(to_real_ptr(raziel_field_ptr("attackCurrentHit")))
   return to_real_ptr(inst) if inst != 0 else 0
@@ -491,8 +494,12 @@ def warp_rooms(mem):
     })
   return rooms
 
+def cheated_glyphs(mem):
+  return mem.read_uchar(to_real_ptr(0xcfdc6))
+
 
 mem = Pymem("RALibretro")
+#mem = Pymem("retroarch")
 events_diff = EventsDiff(mem)
 instances_diff = InstancesDiff(mem)
 raziel_diff = RazielDiff(mem)
@@ -579,7 +586,7 @@ while True:
   else:
     out += f"  child: {raz_child_inst['name']}\n"
   out += f"  abilities: {raziel_diff.abilities()}\n"
-  out += f"  health: scale={raziel_health_scale(mem)} balls={raziel_health_balls(mem)}\n"
+  out += f"  health: hp={raziel_hit_points(mem)} scale={raziel_health_scale(mem)} balls={raziel_health_balls(mem)}\n"
   out += f"  max mana: {raziel_max_mana(mem)}\n"
   out += f"  human opinion: {human_opinion(mem)}\n"
   if True:
@@ -601,6 +608,7 @@ while True:
       out += f"  hit monster: none\n"
     else:
       out += f"  hit monster: 0x{raz_hit_mon['ptr']:08x} name={raz_hit_mon['name']}\n"
+    out += f"cheated glyphs: 0x{cheated_glyphs(mem)}\n"
 
   if False:
     out += "\nwarps:\n"

@@ -917,14 +917,51 @@ function event_has_not_occurred(evt_name) {
 }
 
 
+// --------------- //
+//   c h e a t s   //
+// --------------- //
+
+// There is no global flag to know whether cheats were used, they mostly change
+// the normal structures, making them impossible to detect. Still, there are
+// multiple protections in place.
+
+// GLYPHS
+// glyphs received through cheats are stored in a specific address that is not
+// used by glyphs earned normally. they remain active until the game is reset
+// and do not get stored in the save file.
+cheated_glyphs__mem = byte(0xcfdc6)
+function no_cheated_glyphs() => cheated_glyphs__mem == 0
+
+// ABILITIES
+// abilities earned through cheats are stored as though they were properly earned
+// and are saved. as such, there is no way to detect them. however, the
+// ability/boss-specific achievements will not trigger if the ability had already
+// been earned through cheats
+
+// HEALTH & ELDRITCH ENERGY
+// there is also no way to detect health increases obtained through cheating.
+// however, it is impossible to earn all health-power-up-related achievements if
+// any of the power ups were obtained through cheating. same goes for eldritch
+// energy
+
+// There was also the possibility of using a pause lock to block all achievements
+// for the current play session if a cheat was used. This would limit the
+// useful cheats to those that can be persisted in the save file. RATools does
+// not have a way to generate this pattern yet though, so I'll refrain from
+// using it for now. The remaining cheats are not that useful anyway.
+// Review when https://github.com/Jamiras/RATools/issues/106 gets a solution.
+
 // =========================== //
 //                             //
 //   A C H I E V E M E N T S   //
 //                             //
 // =========================== //
 
+function cheat_protection() => no_cheated_glyphs()
+
 function ingame_common_trigger() {
     return in_game()
+           && cheat_protection()
 }
 
 function event_trigger(evt_name) {
@@ -1187,7 +1224,8 @@ achievement(
     title="Welcome... to Your Destiny",
     description="Defeat Kain in the Chronoplast and follow your destiny",
     points=25,
-    trigger=watching_movie("Ending")
+    trigger=cheat_protection()
+            && watching_movie("Ending")
 )
 
 // -----------------
