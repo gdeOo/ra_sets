@@ -297,12 +297,50 @@ raziel_abilities__bitflags = {
     "Telekinetic projectile": bit2(raziel_abilities__addr),
     "Soul Reaver":            bit3(raziel_abilities__addr),
     "Swimming":               bit4(raziel_abilities__addr),
-    "Constrict":              bit5(raziel_abilities__addr)
+    "Constrict":              bit5(raziel_abilities__addr),
+    
+    "Force Glyph":            bit2(raziel_abilities__addr + 2),
+    "Stone Glyph":            bit3(raziel_abilities__addr + 2),
+    "Sound Glyph":            bit4(raziel_abilities__addr + 2),
+    "Water Glyph":            bit5(raziel_abilities__addr + 2),
+    "Fire Glyph":             bit6(raziel_abilities__addr + 2),
+    "Sunlight Glyph":         bit7(raziel_abilities__addr + 2),
 }
+
+function has_ability(name) => raziel_abilities__bitflags[name] == 1
 
 function just_earned_ability(name) {
     return prev(raziel_abilities__bitflags[name]) == 0
         && raziel_abilities__bitflags[name] == 1
+}
+
+glyph_eldritch_increase = {
+    "Force Glyph":    2,
+    "Stone Glyph":    2,
+    "Sound Glyph":    4,
+    "Water Glyph":    6,
+    "Fire Glyph":     8,
+    "Sunlight Glyph": 10
+}
+
+function total_glyph_eldritch() {
+    val = 0
+    for glyph in glyph_eldritch_increase {
+        for i in range(1, glyph_eldritch_increase[glyph]) {
+            val = val + raziel_abilities__bitflags[glyph]
+        }
+    }
+    return val
+}
+
+function prev_total_glyph_eldritch() {
+    val = 0
+    for glyph in glyph_eldritch_increase {
+        for i in range(1, glyph_eldritch_increase[glyph]) {
+            val = val + prev(raziel_abilities__bitflags[glyph])
+        }
+    }
+    return val
 }
 
 raziel_cur_hit__mem = tbyte(raziel_field("attackCurrentHit"))
@@ -1367,7 +1405,8 @@ achievement(
     description="Collect your first Eldritch energy power-up",
     points=5,
     trigger=ingame_common_trigger()
-            && just_changed(raziel_max_eldritch__mem, min_eldritch, min_eldritch + eldritch_powerup_step)
+            && raziel_max_eldritch__mem == prev(raziel_max_eldritch__mem) + eldritch_powerup_step
+            && (raziel_max_eldritch__mem - total_glyph_eldritch()) == eldritch_powerup_step
 )
 
 achievement(
@@ -1377,7 +1416,8 @@ achievement(
     description="Collect all Eldritch energy power-ups",
     points=10,
     trigger=ingame_common_trigger()
-            && just_changed(raziel_max_eldritch__mem, max_eldritch - eldritch_powerup_step, max_eldritch)
+            && raziel_max_eldritch__mem == prev(raziel_max_eldritch__mem) + eldritch_powerup_step
+            && (raziel_max_eldritch__mem - total_glyph_eldritch()) == eldritch_powerup_step * 5
 )
 
 achievement(
