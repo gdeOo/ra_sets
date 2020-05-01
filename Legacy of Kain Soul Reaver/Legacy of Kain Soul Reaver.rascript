@@ -622,7 +622,7 @@ function pool_inst_just_finished_anim(inst_type, anim_name) {
     for i in range(0, 59) {
         cond = cond || (
             inst_is_active(p)
-            && inst_was_active(p)  // needed because we're using deltas
+            && inst_id(p) == prev(inst_id(p))
             && inst_is__by_name(p, inst_type)
             && inst_just_finished_anim(p, inst_type, anim_name)
         )
@@ -1076,11 +1076,11 @@ function survive_kain_1_attack() {
     for i in range(0, 59) {
         kain_cond = kain_cond || (
             once(inst_is_active(p)
-                 && inst_was_active(p)  // needed becuase we're using deltas
+                 && inst_id(p) == prev(inst_id(p))
                  && inst_is__by_name(p, "Kain")
                  && inst_just_changed_anim(p, "Kain", "Charging attack", "Attack part 1"))
             && inst_is_active(p)
-            && inst_was_active(p)
+            && inst_id(p) == prev(inst_id(p))
             && inst_is__by_name(p, "Kain")
             && inst_just_started_anim(p, "Kain", "Charging attack")
         )
@@ -1460,7 +1460,7 @@ function just_killed_dumahim_in_lake() {
     for i in range(0, 59) {
         cond = cond || (
             inst_is_active(p)
-            && inst_was_active(p)
+            && inst_id(p) == prev(inst_id(p))
             && inst_is__by_name(p, "Adult Dumahim")
             // unsigned equivalent of: position.z < -15000
             && inst_position_z(p) > 32767 && inst_position_z(p) < 50536
@@ -1496,6 +1496,7 @@ function was_just_worshiped_by_hunter() {
     for i in range(0, 59) {
         cond = cond || (
             inst_is_active(p)
+            && inst_id(p) == prev(inst_id(p))
             && inst_is_hunter(p)
             && inst_just_started_anim(p, "hunter", "Worshiping")
         )
@@ -1524,6 +1525,7 @@ function killed_human_without_blame() {
     for i in range(0, 59) {
         cond = cond || (
             inst_is_active(p)
+            && inst_id(p) == prev(inst_id(p))
             && inst_is__by_qry_func(p, "Human")
             && mob_inst_just_died(p)
             && mob_inst_has_no_enemy(p)
@@ -1665,13 +1667,17 @@ function killed_two_vampires_with_same_torch() {
         && (
             repeated(2, 
                 target != 0
+                && prev(target) != 0
                 && inst_is_active(target)
+                && inst_id(target) == prev(inst_id(target))
                 && inst_is__by_qry_func(target, "Dumahim + Melchahim + Rahabim + Turelim + Soul")
                 && mob_inst_just_killed_by_fire(target)
                 && inst_anim_is(raziel_instance__mem, "Raziel", "Using Torch")
             ) || repeated(2,
                 target != 0
+                && prev(target) != 0
                 && inst_is_active(target)
+                && inst_id(target) == prev(inst_id(target))
                 && inst_is__by_qry_func(target, "Zephonim")
                 && mob_inst_just_killed_by_fire(target)
                 && inst_anim_is(raziel_instance__mem, "Raziel", "Using Torch")
@@ -1696,6 +1702,7 @@ function vampire_killed_itself_in_sunlight() {
     for i in range(0, 59) {
         cond = cond || (
             inst_is_active(p)
+            && inst_id(p) == prev(inst_id(p))
             && (inst_is__by_qry_func(p, "Dumahim + Melchahim + Rahabim + Turelim + Soul")
                 || inst_is__by_qry_func(p, "Zephonim"))
             // touching sunlight kills by fire...
