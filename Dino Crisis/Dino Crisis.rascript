@@ -2792,7 +2792,11 @@ achievement(
     description="Unlock Operation Wipeout by beating the game in under 5 hours",
     points=5,
     trigger=(
-        debriefing_unlocking_operation_wipeout()
+        // require conditions for 0.5 seconds, because they'll be active for at least 2 frames
+        // even when operation wipeout is not unlocked. 0.5 seconds should be safe because
+        // it doesn't seem possible to skip the unlock stage that fast
+        repeated(30, debriefing_unlocking_operation_wipeout())
+        && never(!in_post_ending_cg())
     )
 )
 
