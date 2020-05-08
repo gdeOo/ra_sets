@@ -1172,7 +1172,7 @@ achievement(
 achievement(
     id=107468,
     badge="117657",
-    title="Telekinetic Sharpshooter [m]",
+    title="The Swift Hand of God [m]",
     description="Defeat Rahab without letting him attack more than twice or entering the spectral plane",
     points=10,
     trigger=ingame_common_trigger()
@@ -1434,7 +1434,7 @@ achievement(
     id=107491,
     badge="117685",
     title="Health Power-Up Emblem",
-    description="Collect five health power-ups pieces, completing an embled and increasing your health coil",
+    description="Collect five health power-ups pieces, completing an emblem and increasing your health coil",
     points=10,
     trigger=ingame_common_trigger()
             && just_changed(raziel_hp_balls__mem, min_hp_balls + hp_scale_balls_step - 1,
