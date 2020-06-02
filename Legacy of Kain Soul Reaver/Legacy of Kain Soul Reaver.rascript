@@ -1363,7 +1363,7 @@ achievement(
     title="An Incinerating Fiery Wave",
     description="Claim the Fire Glyph from a four-armed demon figure",
     points=5,
-    trigger=event_trigger("Collect the Fire Glyph")
+    trigger=ability_earned_trigger("fire4", "Fire Glyph")
 )
 
 achievement(
