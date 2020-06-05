@@ -98,7 +98,7 @@ __Player__struct = {
     "HealthBalls":                  1018,  // word
     "HitPoints":                    1020,  // dword
     "Abilities":                    1032,  // dword
-    "GlyphManaMax":                 1040,  // word
+    "GlyphManaMax":                 1042,  // word
     "CurrentPlane":                 1080,  // dword
     "attackCurrentHit":             1108,  // _Instance*
 }
