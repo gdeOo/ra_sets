@@ -668,6 +668,8 @@ function battle_is_lost() {
            && entered_battle_result_screen()
 }
 
+function battle_just_won() => prev(win_flag()) == 0 && win_flag() == 1
+
 function trainer_id() => byte(0x0ae779)
 function fighting_by_id(trainer_name) => trainer_id() == trainer[trainer_name]
 function fighting_someone() => trainer_id() != 0
@@ -1266,7 +1268,7 @@ function beat_cup_trigger(mode_name, difficulty_name, round) {
         && fighting_by_position(8)
         && in_round(round)
         && p2_3_team_all_fainted()
-        && battle_is_won()
+        && battle_just_won()
 }
 
 function cup_ach(mode, difficulty, round, title, description, points, id, badge) {
