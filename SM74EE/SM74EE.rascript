@@ -285,6 +285,7 @@ mario__struct = {
     "z":                  0x44,  // dword (float)
     "interaction object": 0x78,  // dword (pointer to object)
     "ridden object":      0x84,  // dword (pointer to object)
+    "coins":              0xaa,  // word
     "hp":                 0xac,  // byte / word
     "nof stars (hud)":    0xf6,  // word
 }
@@ -307,6 +308,8 @@ function pos_z() => dword(mario_field("z"))
 function interaction_object() => tbyte(mario_field("interaction object"))
 function ridden_object() => tbyte(mario_field("ridden object"))
 function stood_on_object() => tbyte(stood_on_object__addr)
+
+function nof_coins() => word(mario_field("coins"))
 
 function hp_int() => byte(mario_field("hp"))
 function just_took_damage() => prev(hp_int()) > hp_int()
@@ -695,18 +698,17 @@ blue_coins_points = [3, 4, 5, 5, 10, 4, 10, 5, 5, 3, 10, 10, 5, 25]
 function blue_coin_achievement(course_index) {
     course_id = format("Course {0}", course_index)
     course_name = level_names[course_id]
-    block_index = blue_coin_indexes[course_id][0]
     coin_indexes = blue_coin_indexes[course_id][1]
 
-    block_active_cond = array_object_is(block_index, "blue coin block")
-                        && array_object_is_active(block_index)
-
+    // a coin is considered collected when it deactivates on the same frame that mario's
+    // number of collected coins increases by 5 or more. this is not a perfect solution,
+    // but given the context it's extremely unlikely to be exploitable
     coins_cond = always_true()
     for coin_index in coin_indexes {
         coins_cond = coins_cond && once(
-            block_active_cond
-            && array_object_is(coin_index, "blue coin for block")
+            array_object_is(coin_index, "blue coin for block")
             && array_object_just_deactivated(coin_index)
+            && (nof_coins() - prev(nof_coins())) >= 5
         )
     }
     
@@ -724,8 +726,6 @@ function blue_coin_achievement(course_index) {
         points=blue_coins_points[course_index - 1],
         trigger=(
             never(!in_level(course_id))
-            && array_object_is(block_index, "blue coin block")
-            && array_object_just_deactivated(block_index)
             && coins_cond
         )
     )
