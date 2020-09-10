@@ -463,21 +463,21 @@ function riding_shell() => ridden_object() != 0 && object_is(ridden_object(), "k
 function stars_meta(points, ids, badge_ids) => { "points": points, "ids": ids, "badge_ids": badge_ids }
 
 course_stars_meta = {
-    "Course 1":  stars_meta([ 2,  2,  2,  2,   3,   2,   5], range(117547, 117553), range(127351, 127357)),
-    "Course 2":  stars_meta([ 2,  5,  2,  2,   2,  10,  10], range(117554, 117560), range(127358, 127364)),
-    "Course 3":  stars_meta([ 4,  5,  2,  2,  10,   2,  50], range(117561, 117567), range(127365, 127371)),
-    "Course 4":  stars_meta([ 2,  2,  3,  5,   4,   2,  25], range(117568, 117574), range(127372, 127378)),
-    "Course 5":  stars_meta([10,  3,  3,  4,   5,  10,  25], range(117575, 117581), range(127379, 127385)),
-    "Course 6":  stars_meta([ 2,  4,  2,  5,   3,  10,  10], range(117582, 117588), range(127386, 127392)),
-    "Course 7":  stars_meta([ 5, 10, 10, 10,   4,   2,  25], range(117589, 117595), range(127393, 127399)),
-    "Course 8":  stars_meta([ 5, 10,  5, 10,   3,   5,  25], range(117596, 117602), range(127400, 127406)),
-    "Course 9":  stars_meta([ 4, 10, 10, 10,   5,   5,  10], range(117603, 117609), range(127407, 127413)),
-    "Course 10": stars_meta([10, 10,  2,  1,   3,  10,  10], range(117610, 117616), range(127414, 127420)),
-    "Course 11": stars_meta([ 4, 10,  5,  5,  10,  10,  50], range(117617, 117623), range(127421, 127427)),
-    "Course 12": stars_meta([ 4, 10,  4, 10,  25,  10,  50], range(117624, 117630), range(127428, 127434)),
-    "Course 13": stars_meta([10, 10,  5,  2,  10,  10,  10], range(117631, 117637), range(127435, 127441)),
-    "Course 14": stars_meta([10, 10, 10, 50,  50,  50, 100], range(117638, 117644), range(127442, 127448)),
-    "Course 15": stars_meta([25, 25, 25, 50, 100, 100,  50], range(117645, 117651), range(127449, 127455))
+    "Course 1":  stars_meta([ 2,  2,  2,  2,   3,   2,  5], range(117547, 117553), range(127351, 127357)),
+    "Course 2":  stars_meta([ 2,  5,  2,  2,   2,  10, 10], range(117554, 117560), range(127358, 127364)),
+    "Course 3":  stars_meta([ 4,  5,  2,  2,  10,   2, 50], range(117561, 117567), range(127365, 127371)),
+    "Course 4":  stars_meta([ 2,  2,  3,  5,   4,   2, 25], range(117568, 117574), range(127372, 127378)),
+    "Course 5":  stars_meta([ 5,  3,  3,  4,   5,  10, 10], range(117575, 117581), range(127379, 127385)),
+    "Course 6":  stars_meta([ 2,  4,  2,  5,   3,  10, 10], range(117582, 117588), range(127386, 127392)),
+    "Course 7":  stars_meta([ 5, 10, 10, 10,   4,   2, 25], range(117589, 117595), range(127393, 127399)),
+    "Course 8":  stars_meta([ 5, 10,  5, 10,   3,   5, 25], range(117596, 117602), range(127400, 127406)),
+    "Course 9":  stars_meta([ 4, 10, 10, 10,   5,   5, 10], range(117603, 117609), range(127407, 127413)),
+    "Course 10": stars_meta([10, 10,  2,  1,   3,  10, 10], range(117610, 117616), range(127414, 127420)),
+    "Course 11": stars_meta([ 2, 10,  5,  5,  10,  10, 50], range(117617, 117623), range(127421, 127427)),
+    "Course 12": stars_meta([ 4, 10,  4, 10,  25,  10, 50], range(117624, 117630), range(127428, 127434)),
+    "Course 13": stars_meta([ 5,  5,  5,  2,  10,   5, 10], range(117631, 117637), range(127435, 127441)),
+    "Course 14": stars_meta([10, 10, 10, 50,  50, 100, 25], range(117638, 117644), range(127442, 127448)),
+    "Course 15": stars_meta([25, 25, 25, 50,  50, 100, 50], range(117645, 117651), range(127449, 127455))
 }
 
 function course_star_achievement(course_index, star_index) {
@@ -498,6 +498,7 @@ function course_star_achievement(course_index, star_index) {
     }
 
     achievement(
+        id = id,
         badge=badge_id,
         title=title,
         description=description,
@@ -548,6 +549,7 @@ function non_course_star_achievements(level_id, star_cheevos) {
         i = i + 1
 
         achievement(
+            id=id,
             badge=badge_id,
             title=title,
             description=description,
@@ -693,7 +695,7 @@ achievement(
 // ----------------------- //
 
 blue_coins_ids = range(117707, 117720)
-blue_coins_points = [3, 4, 5, 5, 10, 4, 10, 5, 5, 3, 10, 10, 5, 25]
+blue_coins_points = [3, 4, 10, 5, 10, 4, 10, 5, 5, 3, 10, 10, 5, 25]
 
 function blue_coin_achievement(course_index) {
     course_id = format("Course {0}", course_index)
@@ -1298,7 +1300,7 @@ achievement(
     badge="127552",
     title="You Shouldn't Be Here",
     description=format("Read the impossible sign in {0}", level_names["Course 15"]),
-    points=25,
+    points=50,
     trigger=(
         in_level("Course 15")
         && reading_dialog("Crudelo-Info 6 of 5")
