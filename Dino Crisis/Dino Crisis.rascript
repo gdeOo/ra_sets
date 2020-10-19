@@ -2507,13 +2507,13 @@ achievement(
     points=10,
     trigger=(
         story_common_trigger()
+        && never_not_in_room("Port (T-Rex Fight)")
         && once(just_entered_room("Port (T-Rex Fight)"))  // scope the cheevo to the whole fight
         && never(                                         // reset if Regina does an almost-full lap:
              crossed_ns_origin_heading_north()            //   - crossed the north-south origin heading towards the hovercraft
              && on_east_side()                            //   - whilst on the east part of the room (side where the item is)
         )
         && never(repeated(7, just_started_shooting()))    // reset if more then 6 shots are fired
-        && in_room("Port (T-Rex Fight)")
         && cutscene_has_started("Receive Items from Rick to Fight the T-Rex")
         && once(just_picked_up_item("Recovery Aid (Port)"))  // remember that we've picked up the item
         && ending_cg_just_started("Rick's Bad Ending")       // trigger when the ending CG starts
