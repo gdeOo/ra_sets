@@ -1,0 +1,1 @@
+The output of `Tomb Raider II.rascript` has to be post-processed by `add_pause_lock.py` to create the final achievement logic.
