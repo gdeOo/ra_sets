@@ -1779,7 +1779,7 @@ achievement(
     badge="146032",
     title="Killer Swan",
     description="[Offshore Rig] Swan dive from the catwalks and kill both full-hp scuba divers without taking damage or coming up for air",
-    points=5,
+    points=10,
     trigger=cheat_protection()
             && never_not_in_level("Offshore Rig")
 
