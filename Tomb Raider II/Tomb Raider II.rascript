@@ -214,6 +214,7 @@ action_id__enum = {
         "Upwards Jump":    0x1c,
         "Slide Backwards": 0x20,
         "Dive":            0x23,
+        "Pickup":          0x27,
         "Swan Dive Start": 0x34,
         "Swan Dive Fall":  0x35,
         "Handstand":       0x36,
@@ -1321,6 +1322,7 @@ function all_secrets_achievement(level_name, id, badge_id) {
                 // the level for at least a second to avoid mistriggers during loads.
                 && never_not_in_level(level_name)
                 && repeated(30, always_true())
+                && entity_action_is(level_name, "Lara", "Pickup")
                 && just_collected_all_secrets()
     )
 }
