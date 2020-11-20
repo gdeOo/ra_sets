@@ -1577,7 +1577,7 @@ achievement(
     id=132523,
     badge="146023",
     title="Lara Croft Boat Racing",
-    description="[Venice] Starting at the ramp, do 3 laps around the buildings on the left without letting go of the throttle or taking damage",
+    description="[Venice] Starting at the ramp, do 3 laps around the buildings on the left without letting go of the throttle or taking damage (map in comments)",
     points=5,
     trigger=cheat_protection()
             && never_not_in_level("Venice")
