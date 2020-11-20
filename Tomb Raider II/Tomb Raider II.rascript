@@ -407,6 +407,12 @@ loading_level__mem = word(loading_level__addr)
 function loading_level() => loading_level__mem == 1
 function just_finished_loading_level() => just_changed(loading_level__mem, 1, 0)
 
+// loading_level__mem turns off one frame before the level becomes ready (entities initialized, ...).
+// In some situations we want to observe this second event, not the first.
+// When can detect it using the music track id, because it gets initialized on the right frame, being
+// 0 during the loading process.
+function level_was_ready() => a_track_was_playing()
+
 script_buffer_start__addr = 0x0e0588
 script_buffer_end__addr = 0x0e087c
 
@@ -520,6 +526,9 @@ function in_saved_level() => level_type__mem == level_type__enum["Saved"]
 
 music_track__addr = 0x087a7c
 music_track__mem = dword(music_track__addr)  // music_track__enum
+
+function a_track_was_playing() =>
+    prev(music_track__mem) != 0
 
 music_track_playing__addr = 0x08d979
 music_track_playing__mem = byte(music_track_playing__addr)  // boolean
@@ -1222,7 +1231,7 @@ function corner_bug_pause_lock() {
                            && upwards_teleport_pos_neg()))
     }
     
-    return cond
+    return level_was_ready() && cond
 }
 
 function just_used_corner_bug() {
@@ -1232,21 +1241,7 @@ function just_used_corner_bug() {
             || (entity_ptr_action_is(lara_entity_ptr__mem, "Lara", action)
                 && (upwards_teleport_neg_neg() || upwards_teleport_pos_pos() || upwards_teleport_pos_neg()))
     }
-    return cond
-}
-
-function once_used_corner_bug() {
-    cond = always_false()
-    for action in ["Upwards Jump", "Run", "Swim"] {
-        cond = cond
-            || once(entity_ptr_action_is(lara_entity_ptr__mem, "Lara", action)
-                    && upwards_teleport_neg_neg())
-            || once(entity_ptr_action_is(lara_entity_ptr__mem, "Lara", action)
-                           && upwards_teleport_pos_pos())
-            || once(entity_ptr_action_is(lara_entity_ptr__mem, "Lara", action)
-                           && upwards_teleport_pos_neg())
-    }
-    return cond
+    return level_was_ready() && cond
 }
 
 //achievement("corner bug pause lock", "...", 5, inputting("Flare") && corner_bug_pause_lock())
@@ -2805,3 +2800,17 @@ for level in [
 }
 
 level_leaderboard("Home Sweet Home")
+
+// ========================== //
+//                            //
+//      D E B U G G I N G     //
+//                            //
+// ========================== //
+
+achievement(
+    id=132761,
+    title="Corner Bug Detection",
+    description="Triggers when a corner bug is detected (for debugging purposes)",
+    points=0,
+    trigger=just_used_corner_bug()
+)
