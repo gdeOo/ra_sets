@@ -2290,7 +2290,8 @@ achievement(
             && never_not_in_level("Catacombs of the Talion")
     
             // store a hit when the level flips (that's how the yetis are freed)
-            && once(level_just_flipped())
+            && once(entity_room_is("Catacombs of the Talion", "Lara", 11)
+                    && level_just_flipped())
             
             // reset if lara takes damage or draws a weapon other than the pistols
             && never(took_damage("Catacombs of the Talion"))
