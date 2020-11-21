@@ -618,6 +618,7 @@ function lara_info_field(field) => _lara_info_field(lara_info__addr, field)
 function water_status() => word(lara_info_field("water status"))
 
 function vehicle_entity_id() => word(lara_info_field("vehicle entity id"))
+function in_a_vehicle() => vehicle_entity_id() != 0xffff
 
 function position_x() => dword(lara_info_field("position x"))
 function position_y() => dword(lara_info_field("position y"))
@@ -1223,15 +1224,21 @@ function corner_bug_pause_lock() {
     cond = always_true()
     for action in ["Upwards Jump", "Run", "Swim"] {
         cond = cond
-            && unless(once(entity_ptr_action_is(lara_entity_ptr__mem, "Lara", action)
+            && unless(once(level_was_ready()
+                           && !in_a_vehicle()
+                           && entity_ptr_action_is(lara_entity_ptr__mem, "Lara", action)
                            && upwards_teleport_neg_neg()))
-            && unless(once(entity_ptr_action_is(lara_entity_ptr__mem, "Lara", action)
+            && unless(once(level_was_ready()
+                           && !in_a_vehicle()
+                           && entity_ptr_action_is(lara_entity_ptr__mem, "Lara", action)
                            && upwards_teleport_pos_pos()))
-            && unless(once(entity_ptr_action_is(lara_entity_ptr__mem, "Lara", action)
+            && unless(once(level_was_ready()
+                           && !in_a_vehicle()
+                           && entity_ptr_action_is(lara_entity_ptr__mem, "Lara", action)
                            && upwards_teleport_pos_neg()))
     }
     
-    return level_was_ready() && cond
+    return cond
 }
 
 function just_used_corner_bug() {
@@ -1241,7 +1248,9 @@ function just_used_corner_bug() {
             || (entity_ptr_action_is(lara_entity_ptr__mem, "Lara", action)
                 && (upwards_teleport_neg_neg() || upwards_teleport_pos_pos() || upwards_teleport_pos_neg()))
     }
-    return level_was_ready() && cond
+    return level_was_ready()
+           && !in_a_vehicle()
+           && cond
 }
 
 //achievement("corner bug pause lock", "...", 5, inputting("Flare") && corner_bug_pause_lock())
