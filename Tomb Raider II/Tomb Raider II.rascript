@@ -1159,6 +1159,10 @@ assault_course_timer_active__mem = word(assault_course_timer_active__addr)
 function assault_course_timer_lt(min, sec, tens_sec) =>
     assault_course_timer__mem < ((min * 600) + (sec * 10) + tens_sec) * 3
 
+function assault_course_just_started() =>
+    assault_course_timer_active__mem == 1
+    && just_changed(assault_course_timer__mem, 1, 2)
+
 function assault_course_just_ended() =>
     just_changed(assault_course_timer_active__mem, 1, 0)
 
@@ -1166,6 +1170,11 @@ function assault_course_just_completed() =>
     assault_course_just_ended()                  // the assault course may end by failure so restrict further:
     && entity_room_is("Lara's Home", "Lara", 2)  // - lara must be in room 2
     && in_2d_box(38910, 41970, 55300, 58365)     // - more specifically, in the sandbox past the last arch
+
+function assault_course_just_failed() =>
+    assault_course_just_ended()
+    && (!entity_room_is("Lara's Home", "Lara", 2)
+        || !in_2d_box(38910, 41970, 55300, 58365))
 
 //
 //   M I S C
@@ -2752,6 +2761,18 @@ rich_presence_display("Lara is in parts unknown")
 //      L E A D E R B O A R D S     //
 //                                  //
 // ================================ //
+
+leaderboard(
+    title="Assault Course",
+    description="Finish the Assault Course in Lara's Home as fast as possible",
+    start=in_level("Lara's Home")
+          && assault_course_just_started(),
+    cancel=just_used_corner_bug()
+           || assault_course_just_failed(),
+    submit=assault_course_just_completed(),
+    value=assault_course_timer__mem * 2,
+    format="FRAMES"
+)
 
 function level_leaderboard_start(level) =>
     just_finished_loading_level()
