@@ -1232,19 +1232,15 @@ function corner_bug_pause_lock() {
 
     cond = always_true()
     for action in ["Upwards Jump", "Run", "Swim"] {
+        common_cond = level_was_ready()
+                      && !in_a_vehicle()
+                      && prev(lara_entity_ptr__mem) == lara_entity_ptr__mem
+                      && entity_ptr_action_was(lara_entity_ptr__mem, "Lara", action)
+                      && entity_ptr_action_is(lara_entity_ptr__mem, "Lara", action)
         cond = cond
-            && unless(once(level_was_ready()
-                           && !in_a_vehicle()
-                           && entity_ptr_action_is(lara_entity_ptr__mem, "Lara", action)
-                           && upwards_teleport_neg_neg()))
-            && unless(once(level_was_ready()
-                           && !in_a_vehicle()
-                           && entity_ptr_action_is(lara_entity_ptr__mem, "Lara", action)
-                           && upwards_teleport_pos_pos()))
-            && unless(once(level_was_ready()
-                           && !in_a_vehicle()
-                           && entity_ptr_action_is(lara_entity_ptr__mem, "Lara", action)
-                           && upwards_teleport_pos_neg()))
+            && unless(once(common_cond && upwards_teleport_neg_neg()))
+            && unless(once(common_cond && upwards_teleport_pos_pos()))
+            && unless(once(common_cond && upwards_teleport_pos_neg()))
     }
     
     return cond
@@ -1254,7 +1250,9 @@ function just_used_corner_bug() {
     cond = always_false()
     for action in ["Upwards Jump", "Run", "Swim"] {
         cond = cond
-            || (entity_ptr_action_is(lara_entity_ptr__mem, "Lara", action)
+            || (prev(lara_entity_ptr__mem) == lara_entity_ptr__mem
+                && entity_ptr_action_was(lara_entity_ptr__mem, "Lara", action)
+                && entity_ptr_action_is(lara_entity_ptr__mem, "Lara", action)
                 && (upwards_teleport_neg_neg() || upwards_teleport_pos_pos() || upwards_teleport_pos_neg()))
     }
     return level_was_ready()
