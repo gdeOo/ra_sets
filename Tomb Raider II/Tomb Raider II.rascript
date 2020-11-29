@@ -412,6 +412,7 @@ function just_finished_loading_level() => just_changed(loading_level__mem, 1, 0)
 // When can detect it using the music track id, because it gets initialized on the right frame, being
 // 0 during the loading process.
 function level_was_ready() => a_track_was_playing()
+function level_just_became_ready() => a_track_just_started_playing()
 
 script_buffer_start__addr = 0x0e0588
 script_buffer_end__addr = 0x0e087c
@@ -529,6 +530,9 @@ music_track__mem = dword(music_track__addr)  // music_track__enum
 
 function a_track_was_playing() =>
     prev(music_track__mem) != 0
+    
+function a_track_just_started_playing() =>
+    just_changed_from(music_track__mem, 0)
 
 music_track_playing__addr = 0x08d979
 music_track_playing__mem = byte(music_track_playing__addr)  // boolean
@@ -1352,9 +1356,9 @@ function nlnmas_achievement(level_name, id, badge_id, points) {
         trigger=(
             cheat_protection()
 
-            && once(just_finished_loading_level()  // no loads: remember the start of the level
-                    && !in_saved_level())          // ... if it was started from the beginning, not loaded from a save
-            && never(loading_level())              // .. and reset if there's another load
+            && once(level_just_became_ready()  // no loads: remember the start of the level
+                    && !in_saved_level())      // ... if it was started from the beginning, not loaded from a save
+            && never(loading_level())          // .. and reset if there's another load
 
             && in_post_level(level_name)  // finished the level
             && used_no_meds()             // ... having used no medipacks
@@ -2130,8 +2134,8 @@ achievement(
             && never_not_in_or_post_or_loading_level("Tibetan Foothills")
     
             // store a hit when loading the level from the beginning
-            && once(just_finished_loading_level() && !in_saved_level())
-            && measured(once(just_finished_loading_level() && !in_saved_level()))
+            && once(level_just_became_ready() && !in_saved_level())
+            && measured(once(level_just_became_ready() && !in_saved_level()))
     
             // reset if loading a level from the beginning or loading an unearned save
             && never(loading_level() && !in_saved_level())
@@ -2194,8 +2198,8 @@ achievement(
             && never_not_in_or_post_or_loading_level("Barkhang Monastery")
             
             // store a hit when loading the level from the beginning
-            && once(just_finished_loading_level() && !in_saved_level())
-            && measured(once(just_finished_loading_level() && !in_saved_level()))
+            && once(level_just_became_ready() && !in_saved_level())
+            && measured(once(level_just_became_ready() && !in_saved_level()))
             
             // reset if loading a level from the beginning or loading an unearned save
             && never(loading_level() && !in_saved_level())
@@ -2550,9 +2554,9 @@ achievement(
     trigger=(
         cheat_protection()
 
-        && once(just_finished_loading_level()  // no loads: remember the start of the level
-                && !in_saved_level())          // ... if it was started from the beginning, not loaded from a save
-        && never(loading_level())              // ... and reset if there's another load
+        && once(level_just_became_ready()  // no loads: remember the start of the level
+                && !in_saved_level())      // ... if it was started from the beginning, not loaded from a save
+        && never(loading_level())          // ... and reset if there's another load
 
         && in_post_level("Dragon's Lair")  // finished the level
         && used_no_meds()                  // ... having used no medipacks
@@ -2774,7 +2778,7 @@ leaderboard(
 )
 
 function level_leaderboard_start(level) =>
-    just_finished_loading_level()
+    level_just_became_ready()
     && !in_saved_level()
     && in_level(level)
     && no_infinite_ammo()
