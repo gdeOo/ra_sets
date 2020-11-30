@@ -26,6 +26,11 @@ function float_le_neg(mem, val) => mem > val
 
 object__struct = {
     "active":                0x76,  // word
+    "num collided objects":  0x74,  // word
+    "collided object 1":     0x78,  // dword (pointer to object)
+    "collided object 2":     0x7c,  // dword (pointer to object)
+    "collided object 3":     0x80,  // dword (pointer to object)
+    "collided object 4":     0x84,  // dword (pointer to object)
     "behaviour script":     0x20c,  // dword
     "power star index":     0x18b,  // byte
     "cork box tangible":    0x14c,  // byte (boolean)
@@ -285,6 +290,7 @@ mario__struct = {
     "z":                  0x44,  // dword (float)
     "interaction object": 0x78,  // dword (pointer to object)
     "ridden object":      0x84,  // dword (pointer to object)
+    "mario object":       0x88,  // dword (pointer to object)
     "coins":              0xaa,  // word
     "hp":                 0xac,  // byte / word
     "nof stars (hud)":    0xf6,  // word
@@ -305,6 +311,7 @@ function pos_x() => dword(mario_field("x"))
 function pos_y() => dword(mario_field("y"))
 function pos_z() => dword(mario_field("z"))
 
+function mario_object() => tbyte(mario_field("mario object"))
 function interaction_object() => tbyte(mario_field("interaction object"))
 function ridden_object() => tbyte(mario_field("ridden object"))
 function stood_on_object() => tbyte(stood_on_object__addr)
@@ -371,6 +378,9 @@ function object_just_deactivated(addr) => object_was_active(addr) && !object_act
 
 function object_is(addr, name) => dword(object_field(addr, "behaviour script")) == behaviour_script__values[name]
 
+function object_num_collided_objects(addr) => word(object_field(addr, "num collided objects"))
+function object_nth_collided_object(addr, n) => tbyte(object_field(addr, format("collided object {0}", n)))
+
 // object specific
 function object_power_star_index(addr)     => byte(object_field(addr, "power star index"))
 function object_cork_box_is_tangible(addr) => byte(object_field(addr, "cork box tangible"))
@@ -394,6 +404,9 @@ function array_object_was_active(index) => object_was_active(nth_array_object(in
 function array_object_just_deactivated(index) => array_object_was_active(index) && !array_object_is_active(index)
 
 function array_object_is(index, name) => object_is(nth_array_object(index), name)
+
+function array_object_num_collided_objects(index)   => object_num_collided_objects(nth_array_object(index))
+function array_object_nth_collided_object(index, n) => object_nth_collided_object(nth_array_object(index), n)
 
 function array_object_cork_box_is_tangible(index) => object_cork_box_is_tangible(nth_array_object(index))
 function array_object_block_is_open(index)        => object_block_is_open(nth_array_object(index))
@@ -702,16 +715,18 @@ function blue_coin_achievement(course_index) {
     course_name = level_names[course_id]
     coin_indexes = blue_coin_indexes[course_id][1]
 
-    // a coin is considered collected when it deactivates on the same frame that mario's
-    // number of collected coins increases by 5 or more. this is not a perfect solution,
-    // but given the context it's extremely unlikely to be exploitable
-    coins_cond = always_true()
+    // A coin is considered collected when it deactivates on a frame in which it is colliding with mario.
+    coins_tally = []
     for coin_index in coin_indexes {
-        coins_cond = coins_cond && once(
-            array_object_is(coin_index, "blue coin for block")
-            && array_object_just_deactivated(coin_index)
-            && (nof_coins() - prev(nof_coins())) >= 5
-        )
+        for i in range(1,4) {
+            array_push(coins_tally, once(
+                array_object_is(coin_index, "blue coin for block")
+                && array_object_just_deactivated(coin_index)
+                && array_object_num_collided_objects(coin_index) >= i
+                && array_object_num_collided_objects(coin_index) <= 4
+                && array_object_nth_collided_object(coin_index, i) == mario_object()
+            ))
+        }
     }
     
     if (course_index < 8) {
@@ -728,7 +743,7 @@ function blue_coin_achievement(course_index) {
         points=blue_coins_points[course_index - 1],
         trigger=(
             never(!in_level(course_id))
-            && coins_cond
+            && tally(length(coin_indexes), coins_tally)
         )
     )
 }
