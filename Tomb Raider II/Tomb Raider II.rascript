@@ -1027,6 +1027,9 @@ function entity_action_was(level, entity, action) =>
 function entity_ptr_action_was(ptr, model, action) =>
     prev(entity_ptr_action_id(ptr)) == action_id__enum[model][action]
 
+function entity_ptr_action_prior_was(ptr, model, action) =>
+    prior(entity_ptr_action_id(ptr)) == action_id__enum[model][action]
+
 function entity_action_changed_to(level, entity, to_action) =>
     !entity_action_was(level, entity, to_action) && entity_action_is(level, entity, to_action)
 
@@ -1239,6 +1242,13 @@ function corner_bug_pause_lock() {
                       && prev(lara_entity_ptr__mem) == lara_entity_ptr__mem
                       && entity_ptr_action_was(lara_entity_ptr__mem, "Lara", action)
                       && entity_ptr_action_is(lara_entity_ptr__mem, "Lara", action)
+
+        // Exception: hanging from the opening of a trapdoor, letting it close, and then letting go.
+        // Action goes from hanging to upwards jump for 2 frames, during which lara teleports upwards,
+        // triggering the protection.
+        if (action == "Upwards Jump")
+            common_cond = common_cond && !entity_ptr_action_prior_was(lara_entity_ptr__mem, "Lara", "Hang")
+
         cond = cond
             && unless(once(common_cond && upwards_teleport_neg_neg()))
             && unless(once(common_cond && upwards_teleport_pos_pos()))
@@ -1251,12 +1261,18 @@ function corner_bug_pause_lock() {
 function just_used_corner_bug() {
     cond = always_false()
     for action in ["Upwards Jump", "Run", "Swim"] {
-        cond = cond
-            || (prev(lara_entity_ptr__mem) == lara_entity_ptr__mem
-                && entity_ptr_action_was(lara_entity_ptr__mem, "Lara", action)
-                && entity_ptr_action_is(lara_entity_ptr__mem, "Lara", action)
-                && (upwards_teleport_neg_neg() || upwards_teleport_pos_pos() || upwards_teleport_pos_neg()))
+        action_cond = (
+            entity_ptr_action_was(lara_entity_ptr__mem, "Lara", action)
+            && entity_ptr_action_is(lara_entity_ptr__mem, "Lara", action)
+            && (upwards_teleport_neg_neg() || upwards_teleport_pos_pos() || upwards_teleport_pos_neg())
+        )
+
+        if (action == "Upwards Jump")
+            action_cond = action_cond && !entity_ptr_action_prior_was(lara_entity_ptr__mem, "Lara", "Hang")
+
+        cond = cond || action_cond
     }
+
     return level_was_playable()
            && !in_a_vehicle()
            && cond
