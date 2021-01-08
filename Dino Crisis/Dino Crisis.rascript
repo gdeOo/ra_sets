@@ -2258,7 +2258,7 @@ achievement(
     id=92437,
     badge="101727",
     title="300 IQ [m]",
-    description="Solve the crane puzzle in General Weapons Store using no more than 15 moves [Normal, No Inf GG]",
+    description="Solve the crane puzzle in General Weapons Store using no more than 4 turns and 15 moves [Normal, No Inf GG]",
     points=10,
     trigger=(
         story_common_trigger()
