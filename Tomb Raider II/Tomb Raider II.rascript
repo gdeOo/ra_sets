@@ -2418,7 +2418,11 @@ achievement(
             
             // store a hit when a swan dive is initiated from the slide and trigger when it finishes on the pool below
             && once((entity_room_is("Temple of Xian", "Lara", 188)
-                     || entity_room_is("Temple of Xian", "Lara", 189))
+                     || entity_room_is("Temple of Xian", "Lara", 189)
+                     || entity_room_is("Temple of Xian", "Lara", 8))
+                    && height_ge(13500)
+                    && position_z() >= 57150
+                    && position_z() <= 59550
                     && entity_action_changed_to("Temple of Xian", "Lara", "Swan Dive Start"))
             && entity_room_is("Temple of Xian", "Lara", 10)
 )
