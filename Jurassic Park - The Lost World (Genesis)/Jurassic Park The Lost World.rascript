@@ -2519,7 +2519,7 @@ function _dilo_friend_achievement() {
         id=140532,
         badge="156258",
         title="Dino Employee of the Month",
-        description="Have a Dilophosaurus open a crate for you, exposing its loot",
+        description="Have a Dilophosaurus open a non-air-drop crate for you, exposing its loot",
         points=2,
         trigger=cheat_protection()
                 && in_a_level()
