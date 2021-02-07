@@ -1033,43 +1033,21 @@ levels_with_completion_delay = ["MOBILE_LAB", "S4_ROUGH_ROAD"]
 // init or update functions to identify the current level bypasses this problem, as
 // those only change when a new level is loaded.
 
-function running_level() =>
+function in_a_level() =>
     // Even though the run_level loop doesn't reset level_update_f upon breaking, checking it alone
     // works fine for the vast majority of cases, because the only way to return to the main menu
     // is through a soft reset initiated by either the game or the player. In some corner cases,
     // such as exiting the ARENA with START, the run_level loop is exited by setting the level_id
     // to a negative level, thus the extra check.
-    mem_wide(level_update_f) != 0
-    && !is_negative(var_type(level_id), mem(level_id))
-
-    // Alternative version that requires alts:
-    //  Checks whether run_level is in the current callstack. this can be used to ignore
-    //  leftover values of level_update_f (happens at least after leaving ARENA with START).
-    //  Also has an exception for the pause menu, because the callstack is different when
-    //  it is active.
-    // in_screen("Pause")
-    // || (mem(make_var(word_t, var_addr(return_address_to_run_level))) == 0x003c
-    //     && mem(make_var(word_t, var_addr(return_address_to_run_level) + 2)) >= 0x0012
-    //     && mem(make_var(word_t, var_addr(return_address_to_run_level) + 2)) <= 0x03d0)
-
-function never_not_running_level() =>
-    never(mem_wide(level_update_f) == 0)
-    && never(is_negative(var_type(level_id), mem(level_id)))
-
-function in_a_level() =>
-    running_level()
+    !is_negative(var_type(level_id), mem(level_id))
     && mem_wide(level_update_f) != 0
 
-function never_not_in_a_level() =>
-    never_not_running_level()
-    && never(mem_wide(level_update_f) == 0)
-
 function in_level(level) =>
-    running_level()
+    !is_negative(var_type(level_id), mem(level_id))
     && mem_wide(level_update_f) == pdp11(level_meta[level]["update_f"])
 
 function never_not_in_level(level) =>
-    never_not_running_level()
+    never(is_negative(var_type(level_id), mem(level_id)))
     && never(mem_wide(level_update_f) != pdp11(level_meta[level]["update_f"]))
 
 function in_a_boss_level() {
@@ -1343,68 +1321,68 @@ function level_entity_group_spawned_or_gone(level, name) {
 //
 
 function is_enemy_entity(alt, ent) {
-// the lengths we go through to minimize alts...
-//
-// by combining multiple entity properties, we can select enemy entities without
-// having to OR all their types. entities marked with (!!!) can't be excluded by
-// these properties, so they must be excluded explicitly or using some other
-// trick. including the t-rex is the hardest one, because there are many (!!!)
-// between it and the other types of enemies, but most levels don't even have
-// t-rexes, so it can be ignored most of the time.
-//
-//                       type  list      targetable  excluded?
-//                       ----  ----      ----------  -----------------
-// * STEGOSAURUS         0x14  ll_1      yes         no
-// * TRICERATOPS         0x15  ll_1      yes         no
-// * ENEMY_HUNTER        0x16  ll_1      yes         no
-//   ---                 0x17  --        --          yes (!exists)
-// * TROODON             0x18  ll_1      yes         no
-//   ---                 0x19  --        --          yes (!exists)
-// * HUNTER_JEEP         0x1a  ll_1      yes         no
-//   STEGO_CAGE_DOOR     0x1b  debris    --          yes (list)
-//   STEGO_CAGE_BARRIER  0x1c  barriers  --          yes (list)
-// * DILOPHOSAURUS       0x1d  ll_1      yes         no
-//   ---                 0x1e  --        --          yes (!exists)
-//   ---                 0x1f  --        --          yes (!exists)
-//   <inv barriers> 0x20-0x25  barriers  --          yes (list)
-//   SENSOR              0x26  ll_1      no          yes (!targetable)
-// * VELOCIRAPTOR        0x27  ll_1      yes         no
-//   ALARM_GENERATOR     0x28  ll_1      yes         no                  (!!!)
-//   ALARM               0x29  debris    --          yes (list)
-//   TENT                0x2a  ll_1      no          yes (!targetable)
-//   HUGE_CRATE          0x2b  ll_1      no          yes (!targetable)
-//   CAMPFIRE            0x2c  ll_1      no          yes (!targetable)
-//   BARREL              0x2d  ll_1      no          yes (!targetable)
-//   SIGNPOST            0x2e  ll_1      no          yes (!targetable)
-//   LEVEL_FLAGPOST      0x2f  ll_1      no          yes (!targetable)
-//   ENV_MINE            0x30  ll_3      no          yes (!targetable)
-//   SANDBAGS            0x31  ll_1      no          yes (!targetable)
-// * BUNKER              0x32  ll_1      yes         no
-//   LAVA_FISSURE        0x33  ll_3      no          yes (!targetable)
-//   GAS_EMITTER         0x34  ll_3      no          yes (!targetable)
-//   FIRE                0x35  ll_3      no          yes (!targetable)
-//   LAVA                0x36  ll_3      no          yes (!targetable)
-//   DOCK_SIGNPOST       0x37  ll_1      no          yes (!targetable)
-//   FALL_ROCK_SPAWNER   0x38  ll_3      no          yes (!targetable)
-//   DOCK                0x39  barriers  --          yes (list)
-//   CAVE_ENTRANCE       0x3a  debris    --          yes (list)
-//   SATCOM              0x3b  ll_1      no          yes (!targetable)
-//   BREAKABLE_ROCK      0x3c  ll_3      yes         no                  (!!!)
-//   BREAKABLE_ROCK_2    0x3d  ll_3      yes         no                  (!!!)
-//   TRUCK_CHECKPOINT    0x3e  ll_1      no          yes (!targetable)
-//   ELECTRIC_POST       0x3f  ll_1      no          yes (!targetable)
-//   ELEC_INV_BARRIER    0x40  barriers  --          yes (list)
-//   GENERATOR           0x41  ll_1      yes         no                  (!!!)
-//   <inv barriers> 0x42-0x45  barriers  --          yes (list)
-//   ---                 0x46  --        --          yes (!exists)
-//   EGG_NEST            0x47  ll_1      no          yes (!targetable)
-//   RED_HUNTER          0x48  ll_3      yes         no                  (!!!)
-//                       0x49  ll_3      no          yes (!targetable)
-//                       0x4a  debris    --          yes (list)
-//   WATER_MINE          0x4b  ll_1      yes         no                  (!!!)
-//   AMBER               0x4c  ll_1      no          yes (!targetable)
-//   TREX_EGG            0x4d  ll_1      no          yes (!targetable)
-// * TREX                0x4e  ll_1      yes         no
+    // the lengths we go through to minimize alts...
+    //
+    // by combining multiple entity properties, we can select enemy entities without
+    // having to OR all their types. entities marked with (!!!) can't be excluded by
+    // these properties, so they must be excluded explicitly or using some other
+    // trick. including the t-rex is the hardest one, because there are many (!!!)
+    // between it and the other types of enemies, but most levels don't even have
+    // t-rexes, so it can be ignored most of the time.
+    //
+    //                       type  list      targetable  excluded?
+    //                       ----  ----      ----------  -----------------
+    // * STEGOSAURUS         0x14  ll_1      yes         no
+    // * TRICERATOPS         0x15  ll_1      yes         no
+    // * ENEMY_HUNTER        0x16  ll_1      yes         no
+    //   ---                 0x17  --        --          yes (!exists)
+    // * TROODON             0x18  ll_1      yes         no
+    //   ---                 0x19  --        --          yes (!exists)
+    // * HUNTER_JEEP         0x1a  ll_1      yes         no
+    //   STEGO_CAGE_DOOR     0x1b  debris    --          yes (list)
+    //   STEGO_CAGE_BARRIER  0x1c  barriers  --          yes (list)
+    // * DILOPHOSAURUS       0x1d  ll_1      yes         no
+    //   ---                 0x1e  --        --          yes (!exists)
+    //   ---                 0x1f  --        --          yes (!exists)
+    //   <inv barriers> 0x20-0x25  barriers  --          yes (list)
+    //   SENSOR              0x26  ll_1      no          yes (!targetable)
+    // * VELOCIRAPTOR        0x27  ll_1      yes         no
+    //   ALARM_GENERATOR     0x28  ll_1      yes         no                  (!!!)
+    //   ALARM               0x29  debris    --          yes (list)
+    //   TENT                0x2a  ll_1      no          yes (!targetable)
+    //   HUGE_CRATE          0x2b  ll_1      no          yes (!targetable)
+    //   CAMPFIRE            0x2c  ll_1      no          yes (!targetable)
+    //   BARREL              0x2d  ll_1      no          yes (!targetable)
+    //   SIGNPOST            0x2e  ll_1      no          yes (!targetable)
+    //   LEVEL_FLAGPOST      0x2f  ll_1      no          yes (!targetable)
+    //   ENV_MINE            0x30  ll_3      no          yes (!targetable)
+    //   SANDBAGS            0x31  ll_1      no          yes (!targetable)
+    // * BUNKER              0x32  ll_1      yes         no
+    //   LAVA_FISSURE        0x33  ll_3      no          yes (!targetable)
+    //   GAS_EMITTER         0x34  ll_3      no          yes (!targetable)
+    //   FIRE                0x35  ll_3      no          yes (!targetable)
+    //   LAVA                0x36  ll_3      no          yes (!targetable)
+    //   DOCK_SIGNPOST       0x37  ll_1      no          yes (!targetable)
+    //   FALL_ROCK_SPAWNER   0x38  ll_3      no          yes (!targetable)
+    //   DOCK                0x39  barriers  --          yes (list)
+    //   CAVE_ENTRANCE       0x3a  debris    --          yes (list)
+    //   SATCOM              0x3b  ll_1      no          yes (!targetable)
+    //   BREAKABLE_ROCK      0x3c  ll_3      yes         no                  (!!!)
+    //   BREAKABLE_ROCK_2    0x3d  ll_3      yes         no                  (!!!)
+    //   TRUCK_CHECKPOINT    0x3e  ll_1      no          yes (!targetable)
+    //   ELECTRIC_POST       0x3f  ll_1      no          yes (!targetable)
+    //   ELEC_INV_BARRIER    0x40  barriers  --          yes (list)
+    //   GENERATOR           0x41  ll_1      yes         no                  (!!!)
+    //   <inv barriers> 0x42-0x45  barriers  --          yes (list)
+    //   ---                 0x46  --        --          yes (!exists)
+    //   EGG_NEST            0x47  ll_1      no          yes (!targetable)
+    //   RED_HUNTER          0x48  ll_3      yes         no                  (!!!)
+    //                       0x49  ll_3      no          yes (!targetable)
+    //                       0x4a  debris    --          yes (list)
+    //   WATER_MINE          0x4b  ll_1      yes         no                  (!!!)
+    //   AMBER               0x4c  ll_1      no          yes (!targetable)
+    //   TREX_EGG            0x4d  ll_1      no          yes (!targetable)
+    // * TREX                0x4e  ll_1      yes         no
 
     common = mem_path(ent, ["type"]) >= enum_value(ENTITY_TYPE, "STEGOSAURUS")
              && mem_path(ent, ["linked_list"]) != enum_value(ENTITY_LINKED_LIST, "BARRIERS")
