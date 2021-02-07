@@ -2032,6 +2032,16 @@ function _ole_achievement() {
             )
        }
     }
+    
+    no_gas_grenades = always_true()
+    for i in range(0, array_var_size(entities)) {
+        ent = addressof_path(entities, [i])
+        no_gas_grenades = no_gas_grenades &&
+            never(entity_is_active(ent)
+                  && mem_path(ent, ["type"]) == enum_value(ENTITY_TYPE, "TRICERATOPS")
+                  && mem_path(ent, ["flags", "HIT_BY_AOE"]) == 1
+                  && mem_path(ent, ["aoe_type"]) == enum_value(AOE_TYPE, "GAS_GRENADE"))
+    }
 
     captured_trike = []
     for i in range(0, array_var_size(entities)) {
@@ -2049,13 +2059,14 @@ function _ole_achievement() {
         id=140515,
         badge="156240",
         title="Ole!",
-        description="[Egg Hunt] Capture a full-health lone Triceratops without taking any hits from it",
+        description="[Egg Hunt] Capture a full-health lone Triceratops without taking any hits from it or using gas grenades",
         points=5,
         trigger=cheat_protection()
                 && never_not_in_level("S4_EGG_HUNT")
                 && tally(1, full_health_trike)
                 && never(mem_path(player_state, ["entity", "flags", "HIT_BY_AOE"]) == 1
                          && mem_path(player_state, ["entity", "aoe_type"]) == enum_value(AOE_TYPE, "TREX/TRIKE"))
+                && no_gas_grenades
                 && tally(1, captured_trike)
     )
 }
