@@ -2461,7 +2461,8 @@ function _scavenger_achievement() {
             || (entity_is_active(ent)
                 && mem_path(ent, ["type"]) == enum_value(ENTITY_TYPE, "FX_1")
                 && mem_path(ent, ["main_render", "sprite_sheet"]) == pdp11(0x002846e8)
-                && mem_path(ent, ["main_render", "sprite_sheet_position_i"]) == 9)
+                && mem_path(ent, ["main_render", "sprite_sheet_position_i"]) == 9
+                && entity_is_visible(ent))
     }
 
     achievement(
