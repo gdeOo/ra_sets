@@ -1464,7 +1464,7 @@ function boss_cheat_protection() =>
 
 function _pacifist_achievement_trigger(level, alt) {
     no_lethal_damage = always_true()
-    for i in range(0, array_var_size(entities)) {
+    for i in range(0, array_var_size(entities) - 1) {
         ent = addressof_path(entities, [i])
         no_lethal_damage = no_lethal_damage
             // enemy hit by a player projectile.
@@ -1882,7 +1882,7 @@ function _parking_achievement() {
 function _sabotage_pacifism() {
     flags = addressof_path(game_state, ["alarm_generator_states"])
     alarm_generators_active = always_true()
-    for i in range(0, array_var_size(flags))
+    for i in range(0, array_var_size(flags) - 1)
         alarm_generators_active = alarm_generators_active
             && mem_path(flags, [i]) == 1
 
@@ -2018,7 +2018,7 @@ function _dino_battle_achievement() {
 
 function _ole_achievement() {
     full_health_trike = []
-    for i in range(0, array_var_size(entities)) {
+    for i in range(0, array_var_size(entities) - 1) {
         ent = addressof_path(entities, [i])
         for it in [["EASY", 0x2aa], ["MEDIUM", 0x3ff], ["HARD", 0x5fe]] {
             dif = it[0]
@@ -2034,7 +2034,7 @@ function _ole_achievement() {
     }
     
     no_gas_grenades = always_true()
-    for i in range(0, array_var_size(entities)) {
+    for i in range(0, array_var_size(entities) - 1) {
         ent = addressof_path(entities, [i])
         no_gas_grenades = no_gas_grenades &&
             never(entity_is_active(ent)
@@ -2044,7 +2044,7 @@ function _ole_achievement() {
     }
 
     captured_trike = []
-    for i in range(0, array_var_size(entities)) {
+    for i in range(0, array_var_size(entities) - 1) {
         ent = addressof_path(entities, [i])
         array_push(captured_trike,
             entity_is_active(ent)
@@ -2261,7 +2261,7 @@ function _buy_hovercraft_achievement() {
 
 function _floor_is_lava_achievement() {
     raptor_killed_by_fissure = always_false()
-    for i in range(0, array_var_size(entities)) {
+    for i in range(0, array_var_size(entities) - 1) {
         ent = addressof_path(entities, [i])
         raptor_killed_by_fissure = raptor_killed_by_fissure
             || (entity_is_active(ent)
@@ -2285,7 +2285,7 @@ function _floor_is_lava_achievement() {
 
 function _poison_plant_achievement() {
     troodon_died_of_poison = always_false()
-    for i in range(0, array_var_size(entities)) {
+    for i in range(0, array_var_size(entities) - 1) {
         ent = addressof_path(entities, [i])
         troodon_died_of_poison = troodon_died_of_poison
             || (entity_is_active(ent)
@@ -2355,7 +2355,7 @@ function _parking_sensors_achievement() {
 
 function _bunker_ff_achievement() {
     bunker_killed_by_hunter = always_false()
-    for i in range(0, array_var_size(entities)) {
+    for i in range(0, array_var_size(entities) - 1) {
         ent = addressof_path(entities, [i])
         bunker_killed_by_hunter = bunker_killed_by_hunter
             || (entity_is_active(ent)
@@ -2381,7 +2381,7 @@ function _bunker_ff_achievement() {
 
 function _triassic_sniper_achievement() {
     mine_blown = always_false()
-    for i in range(0, array_var_size(entities)) {
+    for i in range(0, array_var_size(entities) - 1) {
         ent = addressof_path(entities, [i])
         mine_blown = mine_blown
             || (entity_is_active(ent)
@@ -2407,7 +2407,7 @@ function _triassic_sniper_achievement() {
 
 function _jurassic_sniper_achievement() {
     enemy_killed_by_boat = always_false()
-    for i in range(0, array_var_size(entities)) {
+    for i in range(0, array_var_size(entities) - 1) {
         ent = addressof_path(entities, [i])
         for enemy_alt in ["NO_TREX", "TREX"] {
             enemy_killed_by_boat = enemy_killed_by_boat
@@ -2436,7 +2436,7 @@ function _jurassic_sniper_achievement() {
 
 function _cretacious_sniper_achievement() {
     dilo_direct_hit = always_false()
-    for i in range(0, array_var_size(entities)) {
+    for i in range(0, array_var_size(entities) - 1) {
         ent = addressof_path(entities, [i])
         dilo_direct_hit = dilo_direct_hit
             || (entity_is_active(ent)
@@ -2466,7 +2466,7 @@ function _scavenger_achievement() {
     // but when it moves too far from its spawn. it explodes and deactivates on the same
     // frame, so we detect the resulting debris entities instead
     stego_carcass_exploded = always_false()
-    for i in range(0, array_var_size(entities)) {
+    for i in range(0, array_var_size(entities) - 1) {
         ent = addressof_path(entities, [i])
         stego_carcass_exploded = stego_carcass_exploded
             || (entity_is_active(ent)
@@ -2490,7 +2490,7 @@ function _scavenger_achievement() {
 
 function _dilo_friend_achievement() {
     dilo_opened_crate = always_false()
-    for i in range(0, array_var_size(entities)) {
+    for i in range(0, array_var_size(entities) - 1) {
         ent = addressof_path(entities, [i])
         dilo_opened_crate = dilo_opened_crate
             || (entity_is_active(ent)
@@ -2519,7 +2519,7 @@ function _dilo_friend_achievement() {
 
 function _desperation_achievement() {
     premature_supply_drop = always_false()
-    for i in range(0, array_var_size(entities)) {
+    for i in range(0, array_var_size(entities) - 1) {
         ent = addressof_path(entities, [i])
         premature_supply_drop = premature_supply_drop
             || (entity_is_active(ent)
@@ -2585,7 +2585,7 @@ function _marianna_achievement() {
 
 function _baby_stegosaurus_achievement() {
     baby_stegosaurus_visible = always_false()
-    for i in range(0, array_var_size(entities)) {
+    for i in range(0, array_var_size(entities) - 1) {
         ent = addressof_path(entities, [i])
         baby_stegosaurus_visible = baby_stegosaurus_visible
             || (entity_is_active(ent)
