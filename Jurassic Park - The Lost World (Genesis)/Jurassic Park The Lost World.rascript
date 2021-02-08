@@ -2701,8 +2701,8 @@ function _boss2_achievement() {
                 && never(repeated(5, mem(playing_boss_level) == 0))
                 
                 // count 100 headbangs
-                && tally(10, headbang)
-                && measured(tally(10, headbang))
+                && tally(100, headbang)
+                && measured(tally(100, headbang))
     )
 }
 
