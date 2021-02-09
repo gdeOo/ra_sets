@@ -2234,6 +2234,24 @@ function _trapped_jeep_achievement() {
     )
 }
 
+//
+//   J u n g l e   F i r e s t o r m
+//
+
+function _wrong_way_achievement() {
+    achievement(
+        id=140968,
+        badge="157210",
+        title="Wrong Turn",
+        description="[Jungle Firestorm] Go north at the start and complete the level using the north exit",
+        points=5,
+        trigger=cheat_protection()
+                && prev(mem_path(level_flags, ["COMPLETED"])) == 0
+                && completed_normal_level("JUNGLE_FIRE")
+                && mem(cast_var(word_t, addressof_path(player_state, ["entity", "position_y"]))) <= 0xc30
+    )
+}
+
 
 //
 //   F i n a l   C o u n t d o w n
@@ -2816,6 +2834,9 @@ _trapped_jeep_achievement()
 
 // Pteranodons
 _boss4_achievement()
+
+// Jungle Firestorm
+_wrong_way_achievement()
 
 // Final Countdown
 _buy_hovercraft_achievement()
