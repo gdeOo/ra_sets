@@ -1905,6 +1905,10 @@ function _sabotage_pacifism() {
 function _lazor_achievement() {
     pos_x_hi = mem(cast_var(word_t, addressof_path(player_state, ["entity", "position_x"])))
     pos_y_hi = mem(cast_var(word_t, addressof_path(player_state, ["entity", "position_y"])))
+    
+    // can't do range comparisons on pdp11 32-bit values, so use just the low 16-bit value
+    shot_time_lo = mem(make_var(word_t, var_addr(addressof_path(player_state, ["entity", "last_shot_time"])) + 2))
+    timer_lo = mem(make_var(word_t, var_addr(ingame_timer) + 2))
 
     achievement(
         id=140511,
@@ -1923,7 +1927,8 @@ function _lazor_achievement() {
                 && mem_path(player_state, ["entity", "facing_angle"]) == 0x0000
                 // player just shot the taser
                 && mem_path(player_state, ["weapon_type"]) == enum_value(WEAPON_TYPE, "TASER")
-                && mem_path(player_state, ["entity", "last_shot_time"]) == mem(ingame_timer)
+                && shot_time_lo >= (timer_lo - 1)
+                && shot_time_lo <= timer_lo
     )
 }
 
