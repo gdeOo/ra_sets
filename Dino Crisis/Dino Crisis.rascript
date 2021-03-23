@@ -2551,7 +2551,8 @@ achievement(
     points=5,
     trigger=(
         story_common_trigger()
-        && in_room("Stabilizer Experiment Room")
+        && (in_room("Stabilizer Experiment Room")
+            || in_room("Special Weapons Storage"))
         && just_picked_up_item("Secret Disc")
     )
 )
