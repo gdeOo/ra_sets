@@ -3630,7 +3630,7 @@ function level_nlnmas_achievement(level, id, badge, points) {
         points=points,
         trigger=level_cheat_protection(level)
                 && never_not_playing_level(level)
-                && once(loadable_level_start(level))
+                && once(level_start(level))
                 && never(mem_increased(mem_path(savegame, ["game", "health_used"])))
                 && mem_path(savegame, ["level", "secrets"]) == n_secrets_
                 && completed_level(level)
@@ -3658,8 +3658,7 @@ function act_nlnmas_achievement(act, id, badge, points) {
                 && never(!in_act_level_)
 
                 // store a hit when the first level of the act starts
-                && once(mem(gameflow_status) == enum_value(GAMEFLOW_STATUS, "IN_LEVEL")
-                        && loadable_level_start(levels_[0]))
+                && once(level_start(levels_[0]))
 
                 // reset if a medipack is used
                 && never(mem_increased(mem_path(savegame, ["game", "health_used"])))
@@ -5248,13 +5247,14 @@ function _training_area_lb() {
 _training_area_lb()
 
 function level_rta_start(level) =>
-    loadable_level_start(level)
+    level_start(level)
 
 function level_rta_cancel(level) =>
     all_guns_cheat()
     || or_alts(all_items_cheat_alts(level))
     // leave one frame to submit
-    || prev(mem(gameflow_status)) != enum_value(GAMEFLOW_STATUS, "IN_LEVEL")
+    || (prev(mem(gameflow_status)) != enum_value(GAMEFLOW_STATUS, "IN_LEVEL")
+        && prev(mem(gameflow_status)) != enum_value(GAMEFLOW_STATUS, "LOAD_LEVEL"))
 
 function level_rta_submit(level) =>
     completed_level(level)
