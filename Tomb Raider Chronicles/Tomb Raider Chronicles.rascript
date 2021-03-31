@@ -2593,6 +2593,7 @@ gameflow_status       = make_var(                GAMEFLOW_STATUS, 0x0a39cc)  // 
 completed_level_id    = make_var(                       LEVEL_ID, 0x0a39d4)  // gfLevelComplete
 level_id              = make_var(                       LEVEL_ID, 0x0a3a88)  // gfCurrentLevel
 lara_item             = make_var(           pointer_t(ITEM_INFO), 0x0a3aa4)
+cd_flags              = make_var(           array_t(byte_t, 136), 0x0a3c60)
 triggered_cutscenes_1 = make_var(                        dword_t, 0x0a3ce8)  // _CutsceneTriggered1
 triggered_cutscenes_2 = make_var(                        dword_t, 0x0a3cec)  // _CutsceneTriggered2
 camera                = make_var(                    CAMERA_INFO, 0x0a3dd0)
@@ -2601,6 +2602,7 @@ cutscene              = make_var(            pointer_t(CUTSCENE), 0x0a40d8)  // 
 current_spotcam_num   = make_var(                         word_t, 0x0a4f4a)  // current_sequence
 keypad_inputs         = make_var(             array_t(byte_t, 4), 0x0a51c4)  // keypadinputs
 sound_sample_table    = make_var(pointer_t(array_t(word_t, 450)), 0x0a5370)  // sample_lut
+cd_track_id           = make_var(                         word_t, 0x0a562c)  // XATrack
 menu_dialog           = make_var(           pointer_t(REQUESTER), 0x0a6f18)  // AutoRequester
 lara                  = make_var(                      LARA_INFO, 0x0a71e8)
 savegame              = make_var(                  SAVEGAME_INFO, 0x0acde8)
@@ -2946,6 +2948,7 @@ items = {
         "Iris Artifact":          item_def( 14, "PICKUP_ITEM2"),
         "Hammer":                 item_def( 35, "KEY_ITEM7"),
         "High Level Access Card": item_def(109, "KEY_ITEM8"),
+        "Iris Lab Scientist":     item_def( 85, "SCIENTIST"),
         "Turrets":                item_group_def([item_def(79, "AUTOGUN"), item_def(86, "AUTOGUN"),
                                                   item_def(97, "AUTOGUN"), item_def(111, "AUTOGUN")]),
         "Killable People":        item_group_def([item_def( 44, "BLUE_GUARD"), item_def( 80, "BLUE_GUARD"), item_def( 99, "BLUE_GUARD"),
@@ -2970,6 +2973,7 @@ items = {
         "Teleporter Disc":        item_def(234, "PUZZLE_ITEM3"),
         "Last Guard":             item_def(219, "BLUE_GUARD"),
         "X-Ray Button 2":         item_def(  0, "SWITCH_TYPE2"),
+        "Backtrack Medipack":     item_def( 42, "BIGMEDI_ITEM"),
         "Restroom Stall Doors":   item_group_def([item_def(189, "KICK_DOOR1"), item_def(190, "KICK_DOOR1"), item_def(192, "KICK_DOOR1"),
                                                   item_def(199, "KICK_DOOR1"), item_def(200, "KICK_DOOR1"), item_def(202, "KICK_DOOR1")]),
         "Ambush Medipacks":       item_group_def([item_def(70, "BIGMEDI_ITEM"), item_def(71, "BIGMEDI_ITEM")])
@@ -3176,7 +3180,8 @@ cutscenes = {
         "Scientist Tag Team":      good_cutscene_def(0x18)
     },
     "ESCAPE_WITH_THE_IRIS": {
-        "Elevator Fall":           spotcam_cutscene_def(0x04)
+        "Elevator Fall":           spotcam_cutscene_def(0x04),
+        "Iris Lab Plan":           spotcam_cutscene_def(0x0c)
     }
 }
 
@@ -4717,12 +4722,37 @@ function _covert_achievement() {
 
                 // trigger when lara is in the corridor
                 && mem_path(lara_, ["room_number"]) == 71
-
-                // didn't kill the scientist to access the Iris
-                //&& cutscene_played_mem("THIRTEENTH_FLOOR", "Scientist Tag Team") == 1
     )
 }
 _covert_achievement()
+
+function _scientist_early_kill_achievement() {
+    scientist_ = item_var("THIRTEENTH_FLOOR", "Iris Lab Scientist")
+
+    achievement(
+        id=147845,
+        badge="165232",
+        title="A Little Too Late for That",
+        description=format("[{0}] Hear the plan to enter the Iris Lab after having already killed the scientist", level_name("THIRTEENTH_FLOOR")),
+        points=2,
+        trigger=level_cheat_protection("THIRTEENTH_FLOOR")
+                && never_not_playing_level("THIRTEENTH_FLOOR")
+                
+                // scientist is dead
+                && mem_path(scientist_, ["flags", "KILLED"]) == 1
+
+                // trigger when the cutscene ends...
+                && cutscene_ended("ESCAPE_WITH_THE_IRIS", "Iris Lab Plan")
+
+                // ...and the track explaining the plan is playing.
+                // why? the cutscene can go one of two ways. if the players goes into it right after killing the scientist, before the
+                // extra guards are unleashed, the sound track of the cutscene will get replaced midway with the track for the cutscene
+                // in which lara's berated for killing the scientist. in that scenario, the player won't hear the now impossible plan,
+                // which is the whole point of this
+                && mem(cd_track_id) == 0x36
+    )
+}
+_scientist_early_kill_achievement()
 
 function _scientist_achievement() {
     achievement(
@@ -4920,6 +4950,40 @@ function _ambush_meds_achievement() {
     )
 }
 _ambush_meds_achievement()
+
+function _backtrack_med_achievement() {
+    lara_ = item_var("ESCAPE_WITH_THE_IRIS", "Lara")
+    medi_ = item_var("ESCAPE_WITH_THE_IRIS", "Backtrack Medipack")
+
+    start_cond_ = once(
+        mem_path(camera, ["pos", "x"]) == 0x8e00
+        && mem_path(camera, ["pos", "y"]) == 0xfffff300
+        && mem_path(camera, ["pos", "z"]) == 0x11e00
+        && mem_changed_from_to(mem_path(camera, ["fixed_camera"]), 0, 1))
+
+    achievement(
+        id=147846,
+        badge="165233",
+        title="Another Questionable Endeavour",
+        description=format("[{0}] After the motion sensor room is broken into, backtrack for a medipack and get to the teleporter room using at most one small medipack",
+                           level_name("ESCAPE_WITH_THE_IRIS")),
+        points=5,
+        trigger=level_cheat_protection("ESCAPE_WITH_THE_IRIS")
+                && playing_level("ESCAPE_WITH_THE_IRIS")
+                
+                // start when the fixed camera happens
+                && start_cond_
+                
+                // reset if we use more than one small medipack, or a single large medipack
+                && never(repeated(2, start_cond_ && mem_decreased_by(mem_path(lara, ["num_small_medipack"]), 1)))
+                && never(mem_decreased_by(mem_path(lara, ["num_large_medipack"]), 1))
+
+                // trigger when lara reaches the teleporter room if the medipack was collected
+                && mem_path(medi_, ["flags", "KILLED"]) == 1
+                && mem_path(lara_, ["room_number"]) == 147
+    )
+}
+_backtrack_med_achievement()
 
 function _midcore_achievement() {
     lara_ = item_var("ESCAPE_WITH_THE_IRIS", "Lara")
@@ -5188,6 +5252,25 @@ function _tightrope_achievement() {
     )
 }
 _tightrope_achievement()
+
+function _fast_shoot_achievement() {
+    round_shot_ = mem_path(lara, ["gun_type"]) == enum_value(WEAPON_TYPE, "REVOLVER")
+                  && mem_path(lara, ["flags", "HAS_FIRED"]) == 1
+                  && mem_decreased_by(mem_path(lara, ["num_revolver_ammo"]), 1)
+
+    achievement(
+        id=147847,
+        badge="165234",
+        title="Speed Shooting",
+        description="Fire 10 revolver rounds in less than 3 seconds without using the laser sight",
+        points=5,
+        trigger=never_not_playing_a_level()
+                && repeated(10, round_shot_)
+                && never(once(round_shot_)
+                         && repeated(time_to_frames(0, 3), always_true()))
+    )
+}
+_fast_shoot_achievement()
 
 function _special_features_achievement() {
     storyboard_sizes_ = [12, 15, 12]
