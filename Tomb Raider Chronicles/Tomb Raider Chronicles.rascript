@@ -3338,7 +3338,11 @@ items_cheat_meta = {
         ["Valve Wheel", "Golden Coin", "Mars Symbol", "Venus Symbol"], [], [], [], []
     ),
     "COLOSSEUM": make_items_cheat_meta(
-        ["Colosseum Key 1", "Colosseum Key 2", "Philosophers Stone"], [], [["Gemstone Piece 1", "Gemstone Piece 2"]], [], []
+        // "Philosophers Stone" is ignored because there's a cutscene skip in Streets of Rome that causes Lara to keep the
+        // Saturn Symbol. When she reaches Colosseum, the item becomes the Philosophers Stone due to having the same id,
+        // triggering the all-items cheat protection. There's really not much downside to ignoring the Philosophers Stone
+        // since it's only used at the very end of the level anyway.
+        ["Colosseum Key 1", "Colosseum Key 2"], [], [["Gemstone Piece 1", "Gemstone Piece 2"]], [], []
     ),
     "BASE": make_items_cheat_meta(
         ["Fuse", "Swipe Card"], ["Silver Keys"], [], [], []
