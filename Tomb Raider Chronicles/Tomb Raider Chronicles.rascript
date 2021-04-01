@@ -4229,7 +4229,8 @@ function _chef_achievement() {
         points=3,
         trigger=level_cheat_protection("SUBMARINE")
                 && never_not_playing_level("SUBMARINE")
-                && once(mem_path(chef_, ["current_anim_state"]) == enum_value(CHEF_ANIM_STATE, "STALKING"))
+                && once(mem_path(chef_, ["current_anim_state"]) >= enum_value(CHEF_ANIM_STATE, "TURNING")
+                        && mem_path(chef_, ["current_anim_state"]) <= enum_value(CHEF_ANIM_STATE, "STALKING"))
                 && mem_path(chef_, ["current_anim_state"]) == enum_value(CHEF_ANIM_STATE, "INCAPACITATED")
     )
 }
