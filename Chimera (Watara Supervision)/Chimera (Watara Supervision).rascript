@@ -449,15 +449,16 @@ SPRITE_ID = enum_t("SPRITE_ID", {
 //                                             __/ |
 //                                            |___/ 
 
-pos_we            = make_var(   byte_t, 0x0023)
-pos_ns            = make_var(   byte_t, 0x0024)
-paused            = make_var(   byte_t, 0x0209)
-score             = make_var(   word_t, 0x0222)
-room_id           = make_var(   byte_t, 0x0224)
-room_background   = make_var(   byte_t, 0x0256)
-room_item         = make_var(SPRITE_ID, 0x025c)
-n_active_warheads = make_var(   byte_t, 0x02a9)
-control_mode      = make_var(   byte_t, 0x06cb)
+pos_we            = make_var(               byte_t, 0x0023)
+pos_ns            = make_var(               byte_t, 0x0024)
+paused            = make_var(               byte_t, 0x0209)
+score             = make_var(               word_t, 0x0222)
+room_id           = make_var(               byte_t, 0x0224)
+room_background   = make_var(               byte_t, 0x0256)
+room_item         = make_var(            SPRITE_ID, 0x025c)
+n_active_warheads = make_var(               byte_t, 0x02a9)
+control_mode      = make_var(               byte_t, 0x06cb)
+room_items        = make_var(array_t(byte_t, 0x40), 0x06cf)
 
 function in_game() => mem(control_mode) != 0
 function game_started() => mem_changed_from(mem(control_mode), 0)
@@ -472,13 +473,6 @@ function game_ended() => mem_changed_to(mem(control_mode), 0)
 //   \__,_| \___||_| |_||_| \___|  \_/  \___||_| |_| |_| \___||_| |_| \__||___/
 //                                                                             
 //                                                                             
-
-function warhead_achievement(id, badge, title, description, points, n) {
-    achievement(title, description, points, id=id, badge=badge,
-        trigger=in_game()
-                && mem_changed_from_to(mem(n_active_warheads), n - 1, n)
-    )
-}
 
 function eliminate_achievement(id, badge, title, description, points, first_sprite, last_sprite) {
     achievement(title, description, points, id=id, badge=badge,
@@ -495,10 +489,55 @@ eliminate_achievement(151099, "169119", "Master Key", "Unlock a door", 5, "DOOR_
 eliminate_achievement(151100, "169120", "Whac-a-Mole", "Eliminate a box that used to belong to Pandora", 5, "PANDORAS_BOX_1", "PANDORAS_BOX_4")
 eliminate_achievement(151101, "169121", "Time Is but an Illusion", "Eliminate a reverse flowing hourglass", 5, "HOURGLASS_1", "HOURGLASS_4")
 
-warhead_achievement(151092, "169112", "A Spanner and a Bolt",    "Assemble and activate the first warhead", 5, 1)
-warhead_achievement(151093, "169113", "A Key and a Padlock",     "Assemble and activate the second warhead", 5, 2)
-warhead_achievement(151094, "169114", "A Torch and a Dark Room", "Assemble and activate the third warhead", 10, 3)
-warhead_achievement(151095, "169115", "Two Mirrored Pyramids",   "Assemble and activate the fourth and final warhead", 10, 4)
+achievement(
+    id=151092,
+    badge="169112",
+    title="DIY Warhead",
+    description="Activate a warhead assembled from a spanner and a bolt",
+    points=5,
+    trigger=in_game()
+            && mem_changed_from_to(mem(n_active_warheads), 0, 1)
+)
+
+achievement(
+    id=151093,
+    badge="169113",
+    title="Locked Away",
+    description="Activate a warhead assembled from a key and a padlock",
+    points=5,
+    trigger=in_game()
+            && mem_changed_from_to(mem(n_active_warheads), 1, 2)
+)
+
+achievement(
+    id=151094,
+    badge="169114",
+    title="In the Dark",
+    description="Activate a warhead obtained from searching a dark room with a torch",
+    points=10,
+    trigger=in_game()
+            && mem_changed_from_to(mem(n_active_warheads), 2, 3)
+            // the torch becomes unobtainable if the pyramid warhead is activated first, so this
+            // warhead must always be the third one to activate. because the pyramid warhead can
+            // also be the third, we additionally check that the torch was collected
+            // note: prev because upon activation of the 3rd warhead, the torchlight is always
+            // replaced with a mug, regardless of having been collected or not
+            && prev(mem_path(room_items, [(0x1e-1)])) == enum_value(SPRITE_ID, "PICKED_UP")
+)
+
+achievement(
+    id=151095,
+    badge="169115",
+    title="Alien Technology",
+    description="Activate a warhead assembled from two mirrored pyramids",
+    points=10,
+    trigger=in_game()
+            // if we're activating the 4th warhead, it's guaranteed to be the pyramid one.
+            // if it's only the 3rd warhead, we need to ensure the torch wasn't collected.
+            && (mem_changed_from_to(mem(n_active_warheads), 3, 4)
+                || (mem_changed_from_to(mem(n_active_warheads), 2, 3)
+                    && prev(mem_path(room_items, [(0x1e-1)])) == enum_value(SPRITE_ID, "TORCH")))
+)
 
 achievement(
     id=151096,
