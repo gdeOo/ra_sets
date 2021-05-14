@@ -1,0 +1,1 @@
+The output of `Cosmic Chasm.rascript` has to be post-processed by `add_pause_lock.py` to create the final achievement logic.
