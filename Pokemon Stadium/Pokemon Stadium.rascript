@@ -1406,7 +1406,7 @@ achievement(
             && fighting_by_position(8)
             && p1_3_team_none_fainted()
             && p2_3_team_all_fainted()
-            && battle_is_won()
+            && battle_just_won()
 )
 
 achievement(
