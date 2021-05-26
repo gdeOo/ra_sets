@@ -3866,12 +3866,12 @@ function _head_achievement() {
         id=147340,
         badge="163925",
         title="Fastest Gun in Rome",
-        description=format("[{0}] Standing on rails, and without zooming in, shoot both eyes of the Mechanical Head whilst it charges a single attack", level_name("TRAJAN_MARKETS")),
+        description=format("[{0}] Standing on metal catwalks, and without zooming in, shoot both eyes of the Mechanical Head whilst it charges a single attack", level_name("TRAJAN_MARKETS")),
         points=5,
         trigger=level_cheat_protection("TRAJAN_MARKETS")
                 && never_not_playing_level("TRAJAN_MARKETS")
         
-                // must always be on the rails. room 245 is the tunnel leading to the head's room,
+                // must always be on the catwalks. room 245 is the tunnel leading to the head's room,
                 // but it's possible to go into it while in the rail, so it must be account for in
                 // a special way
                 && never(mem_path(lara_, ["room_number"]) != 66
