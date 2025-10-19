@@ -13,8 +13,8 @@
 // ======================= \\
 // ======================= \\
 
-true = 1
-false = 0
+TRUE = 1
+FALSE = 0
 null = 0
 
 //
@@ -2632,8 +2632,8 @@ DoTitle_ret_addr           = make_var(code_t,  0x0114ac)
 
 function in_a_fmv() => mem_path(active_disp_env, ["isrgb24"]) == 1
 function in_title() => mem_wide(DoGameFlow_ret) == var_addr(DoTitle_ret_addr)
-function in_a_cutscene() => mem(playing_cutscene) == true
-function in_credits() => mem(in_credits) == true
+function in_a_cutscene() => mem(playing_cutscene) == TRUE
+function in_credits() => mem(in_credits) == TRUE
 
 function loading_level() =>
     // loading_level is mostly active while loading, but still leaves a few frames at the end during which the
@@ -2783,7 +2783,7 @@ function level_dyn_items(level) {
 
 function level_rooms(level) {
     // note: only works when in the level
-    make_var(array_t(ROOM_INFO, level_meta[level]["n_rooms"]), mem_path(rooms, ["*"]))
+    return make_var(array_t(ROOM_INFO, level_meta[level]["n_rooms"]), mem_path(rooms, ["*"]))
 }
 
 function make_act_meta(name, levels, secrets_idx) =>
@@ -3935,7 +3935,7 @@ function _larson_skip_achievement() {
         points=5,
         trigger=level_cheat_protection("TRAJAN_MARKETS")
                 && completed_level("TRAJAN_MARKETS")
-                && is_positive(typeof_path(larson_, ["hit_points"]), mem_path(larson_, ["hit_points"]))
+                && mem_path(larson_, ["flags2", "ACTIVE"]) == 1
     )
 }
 _larson_skip_achievement()
@@ -5329,7 +5329,7 @@ function _training_area_lb() {
                 || (prev(mem_path(lara_, ["pos", "x_pos"])) <= 45055
                     && mem_path(lara_, ["pos", "x_pos"]) > 45055)),
         submit=mem_changed_to(mem_path(door_, ["current_anim_state"]), enum_value(DOOR_ANIM_STATE, "OPEN")),
-        value=measured(not_paused_no_alts())
+        value=measured(tally(0, not_paused_no_alts()))
     )
 }
 _training_area_lb()
@@ -5354,7 +5354,7 @@ for level_ in playable_levels {
         start=level_rta_start(level_),
         cancel=level_rta_cancel(level_),
         submit=level_rta_submit(level_),
-        value=measured(not_paused_no_alts())
+        value=measured(tally(0, not_paused_no_alts()))
     )
 }
 
