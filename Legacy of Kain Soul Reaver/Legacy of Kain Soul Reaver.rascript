@@ -620,12 +620,12 @@ function pool_inst_just_finished_anim(inst_type, anim_name) {
     p = _InstancePool_field(instance_pool__addr, "instance")
     cond = always_false()
     for i in range(0, 59) {
-        cond = cond || (
+        cond = (
             inst_is_active(p)
             && inst_id(p) == prev(inst_id(p))
             && inst_is__by_name(p, inst_type)
             && inst_just_finished_anim(p, inst_type, anim_name)
-        )
+        ) || cond
         p = p + _Instance__sizeof
     }
     return cond
@@ -933,9 +933,11 @@ events = {
 
 function event_just_occurred(evt_name) {
     evt_def = events[evt_name]
+    evt_vars = event_vars(evt_def["evt_idx"])
     evt_var = event_var(evt_def["evt_idx"], evt_def["var_idx"])
     return in_area(evt_def["area"])
            && was_in_area(evt_def["area"])
+           && prev(evt_vars) == evt_vars
            && prev(evt_var) == evt_def["pre_val"]
            && evt_var == evt_def["pos_val"]
 }
@@ -1172,14 +1174,14 @@ achievement(
 achievement(
     id=107468,
     badge="117657",
-    title="The Swift Hand of God [m]",
+    title="The Swift Hand of God",
     description="Defeat Rahab without letting him attack more than twice or entering the spectral plane",
     points=10,
     trigger=ingame_common_trigger()
             && never(!in_area("aluka6"))
             && once(event_just_occurred("Start of Rahab's intro"))
-            && never(repeated(3, pool_inst_just_finished_anim("Rahab", "Melee attack")
-                                 || pool_inst_just_finished_anim("Rahab", "Ranged attack")))
+            && never(repeated(3, pool_inst_just_finished_anim("Rahab", "Ranged attack")
+                                 || pool_inst_just_finished_anim("Rahab", "Melee attack")))
             && never(in_spectral_plane())
             && event_just_occurred("Start of Rahab's death")
 )
