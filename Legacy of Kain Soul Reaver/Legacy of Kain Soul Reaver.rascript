@@ -1201,7 +1201,16 @@ achievement(
     title="Complacent in Their Arrogance",
     description="Reach the Ruined City, abandoned Dumahim clan territory",
     points=5,
-    trigger=event_trigger("Ruins of Dumahim intro")
+    trigger=ingame_common_trigger()
+            && once(just_entered_area("nighta1"))
+            && never(repeated(60, in_area("nighta1")))
+            && never(!in_area("nighta1"))
+            && raziel_in_cutscene()
+
+    // reimplemented to use the same approach as Through the Fallen Skull, because it's
+    // possible the first frame issue can also happen here, but rarely. see ticket 96068
+    // trigger=event_trigger("Ruins of Dumahim intro")
+            
 )
 
 achievement(
