@@ -6,7 +6,7 @@ import sys
 from colorama import Style
 
 
-base_addr = 0x13b07c00  # change me
+base_addr = 0x10000000  # change me
 
 eu = False
 if len(sys.argv) > 1:
@@ -85,6 +85,11 @@ _InstancePool__struct_fields = {
   "instance": 8,  #_Instance[60]
 }
 
+_MonsterVars__struct_fields = {
+  "mvFlags": 0,
+  "damageType": 320
+}
+
 def instance_field_ptr(instance_ptr, field):
   return instance_ptr + _Instance__struct_fields[field]
 
@@ -152,7 +157,9 @@ def read_instance(mem, instance_ptr):
     'extraData[0x51*4]': mem.read_ushort(to_real_ptr(extra_data_ptr) + 0x51 * 4),
     'extraData[0x144]': mem.read_ushort(to_real_ptr(extra_data_ptr) + 0x144),
     'extraData[340]': mem.read_uchar(to_real_ptr(extra_data_ptr) + 340),
-    'extraData[hitPoints]': mem.read_ushort(to_real_ptr(extra_data_ptr) + 320),
+    #'extraData[hitPoints]': mem.read_ushort(to_real_ptr(extra_data_ptr + _MonsterVars__struct_fields["hitPoints"])),
+    'extraData[mvFlags]': mem.read_uint(to_real_ptr(extra_data_ptr + _MonsterVars__struct_fields["mvFlags"])),
+    'extraData[damageType]': mem.read_ushort(to_real_ptr(extra_data_ptr + _MonsterVars__struct_fields["damageType"])),
     'position': (mem.read_short(to_real_ptr(instance_ptr + _Instance__struct_fields["position.x"])),
                  mem.read_short(to_real_ptr(instance_ptr + _Instance__struct_fields["position.y"])),
                  mem.read_short(to_real_ptr(instance_ptr + _Instance__struct_fields["position.z"]))),
@@ -504,7 +511,7 @@ events_diff = EventsDiff(mem)
 instances_diff = InstancesDiff(mem)
 raziel_diff = RazielDiff(mem)
 paused = False
-show_inst_idx = 12
+show_inst_idx = 7
 
 def process_keyboard():
   while msvcrt.kbhit():
@@ -570,7 +577,8 @@ while True:
     out += f"  data 0x{inst['data']:08x} [0x10]=0x{inst['data[0x10]']:08x}\n"
     out += f"  extraData 0x{inst['extraData']:08x} [0]=0x{inst['extraData[0]']:08x} dead? {inst['extraData[0]'] & 0x200 != 0}"
     out += f" [0x144]=0x{inst['extraData[0x144]']:08x} [340]={inst['extraData[340]']}\n"
-    out += f"  position={inst['position']} queryFunc=0x{inst['queryFunc']:08x}"
+    out += f"  position={inst['position']} queryFunc=0x{inst['queryFunc']:08x}\n"
+    out += f"  mvFlags=0x{inst['extraData[mvFlags]']:08x} damageType=0x{inst['extraData[damageType]']:04x}"
     out += "\n\n"
 
   raz_inst = player_instance(mem)

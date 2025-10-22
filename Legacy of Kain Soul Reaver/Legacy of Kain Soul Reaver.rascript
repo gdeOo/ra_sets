@@ -126,8 +126,9 @@ WarpGateLoadInfo__struct = {
 }
 
 _MonsterVars__struct = {
-    "mvFlags": 0,    // dword
-    "enemy":   196,  // _MonsterIR*
+    "mvFlags":    0,    // dword
+    "enemy":      196,  // _MonsterIR*
+    "damageType": 320   // word
 }
 
 _MonsterIR__struct = {
@@ -443,7 +444,8 @@ function positive_human_opinion() {
 animation_ids = {
     "Raziel": {
         "Stunned": 128,
-        "Using Torch": 138
+        "Using Torch": 138,
+        "Casting Sunlight Glyph (Damage)": 206
     },
     "Melchiah": {
         "Hit on back": 7
@@ -567,7 +569,17 @@ function mob_inst_just_killed_by_fire(inst_ptr) {
            && bit6(_MonsterVars_field(inst_extra_data(inst_ptr), "mvFlags") + 2) == 1
 }
 
+mob_inst_damageType__values = {
+    "Fire":     0x20,
+    "Sunlight": 0x40
+}
+
+function mob_inst_damaged_by(inst_ptr, damageType) {
+    return word(_MonsterVars_field(inst_extra_data(inst_ptr), "damageType")) == mob_inst_damageType__values[damageType]
+}
+
 mob_inst_state__values = {
+    "Idle":         2,
     "Missile Hit":  3,
     "Fall":         4,
     "Hit":          8,
@@ -577,6 +589,7 @@ mob_inst_state__values = {
     "Impact":       12,
     "Break Hold":   14,
     "Land on Feet": 15,
+    "Surprised":    24
 }
 
 function mob_inst_cur_state_is(inst_ptr, state_name) {
@@ -1716,14 +1729,18 @@ function vampire_killed_itself_in_sunlight() {
             && inst_id(p) == prev(inst_id(p))
             && (inst_is__by_qry_func(p, "Dumahim + Melchahim + Rahabim + Turelim + Soul")
                 || inst_is__by_qry_func(p, "Zephonim"))
-            // touching sunlight kills by fire...
-            && mob_inst_just_killed_by_fire(p)
 
-            // but we have to ignore everything else that kills by fire
-            // using the state prior to death:
-            //   - kills by torch and fire reaver
-            && !mob_inst_prior_state_was(p, "Stunned")
+            // touching sunlight kills by fire... but with a specific damage type
+            && mob_inst_just_killed_by_fire(p)
+            && mob_inst_damaged_by(p, "Sunlight")
+            
+            // the sunlight glyph kills the same way, so exclude it
+            && !inst_anim_is(raziel_instance__mem, "Raziel", "Casting Sunlight Glyph (Damage)")
+            
+            // also exclude situations in which the player moved the vampire into the sunlight
+            // best effort... might not be enough
             //   - pushed by the player
+            && !mob_inst_prior_state_was(p, "Stunned")
             && !mob_inst_prior_state_was(p, "Missile Hit")
             && !mob_inst_prior_state_was(p, "Fall")
             && !mob_inst_prior_state_was(p, "Hit")
@@ -1733,7 +1750,6 @@ function vampire_killed_itself_in_sunlight() {
             && !mob_inst_prior_state_was(p, "Grabbed")
             && !mob_inst_prior_state_was(p, "Thrown")
             && !mob_inst_prior_state_was(p, "Break Hold")
-            
         )
         p = p + _Instance__sizeof
     }
