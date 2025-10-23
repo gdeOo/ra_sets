@@ -867,7 +867,13 @@ function hall_of_fame_n_pk() {
     return byte(0x1930d8)
 }
 
-function victory_lap_pk_id() => byte(0x1d64e4)
+function castle_victory_lap_pk_id() => byte(0x1d64e4)
+function cup_victory_lap_pk_id() => byte(0x1d5b3c)
+
+function victory_lap_pokemon_is(pk_name) {
+    return (in_mode2("Gym Leader Castle") && castle_victory_lap_pk_id() == pokemon[pk_name])
+        || (in_mode2("Stadium") && cup_victory_lap_pk_id() == pokemon[pk_name])
+}
 
 hofame_pokemon_struct_offset = {
     "cup":          0x00,  // byte (same value as "mode" + 0x80 if round 2)
@@ -1387,9 +1393,8 @@ achievement(
     title="Raised Him Myself",
     description="Register Mewtwo into the Hall of Fame",
     points=2,
-    trigger=hofame_in_memory()
-            && hofame_was_in_memory()
-            && hofame_pk_just_registered("Mewtwo")
+    trigger=in_mode("Victory Lap")
+            && victory_lap_pokemon_is("Mewtwo")
 )
 
 // battle challenges
