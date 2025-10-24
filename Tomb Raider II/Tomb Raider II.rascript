@@ -941,6 +941,7 @@ function _entity_animation_id      (addr) =>  word(entity_field(addr, "animation
 function _entity_hit_points        (addr) =>  word(entity_field(addr, "hit points"))
 function _entity_timer             (addr) =>  word(entity_field(addr, "timer"))
 function _entity_speed             (addr) =>  word(entity_field(addr, "horizontal speed"))
+function _entity_position_x        (addr) => dword(entity_field(addr, "position x"))
 function _entity_position_y        (addr) => dword(entity_field(addr, "position y"))
 function _entity_position_z        (addr) => dword(entity_field(addr, "position z"))
 function _entity_data              (addr) => dword(entity_field(addr, "data"))
@@ -968,6 +969,7 @@ function entity_animation_id      (level, entity) => _entity_animation_id      (
 function entity_hit_points        (level, entity) => _entity_hit_points        (entity_addr(level, entity))
 function entity_timer             (level, entity) => _entity_timer             (entity_addr(level, entity))
 function entity_speed             (level, entity) => _entity_speed             (entity_addr(level, entity))
+function entity_position_x        (level, entity) => _entity_position_x        (entity_addr(level, entity))
 function entity_position_z        (level, entity) => _entity_position_z        (entity_addr(level, entity))
 function entity_data              (level, entity) => _entity_data              (entity_addr(level, entity))
 function entity_flags_trigger     (level, entity) => _entity_flags_trigger     (entity_addr(level, entity))
@@ -2079,8 +2081,12 @@ achievement(
             && never(entity_room_is("Tibetan Foothills", "Lara", 80))
             && never(entity_room_is("Tibetan Foothills", "Lara", 78) && position_z() <= 9190)
             
-            // trigger when the top boulders stop moving
-            && boulders_stopped_moving("Tibetan Foothills", "Top Boulders 1")
+            // trigger a bit after the top boulders stop moving.
+            // the wait avoids triggering when lara gets killed at the very
+            // bottom of the hill a couple frames _after_ the top boulders have stopped
+            && once(boulders_stopped_moving("Tibetan Foothills", "Top Boulders 1"))
+            && repeated(15, entity_speed("Tibetan Foothills", "Top Boulders 1") == 0
+                            && entity_position_x("Tibetan Foothills", "Top Boulders 1") >= 81000)
 )
 
 achievement(
