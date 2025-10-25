@@ -976,6 +976,7 @@ function entity_flags_trigger     (level, entity) => _entity_flags_trigger     (
 function entity_flags2_active     (level, entity) => _entity_flags2_active     (entity_addr(level, entity))
 function entity_flags2_status_bit0(level, entity) => _entity_flags2_status_bit0(entity_addr(level, entity))
 function entity_flags2_status_bit1(level, entity) => _entity_flags2_status_bit1(entity_addr(level, entity))
+function entity_flags2_collidable (level, entity) => _entity_flags2_collidable (entity_addr(level, entity))
 function entity_flags2_took_hit   (level, entity) => _entity_flags2_took_hit   (entity_addr(level, entity))
 
 function entity_ptr_action_id   (ptr) => _entity_action_id   (ptr)
@@ -1052,6 +1053,9 @@ function entity_activated(level, entity) =>
 
 function entity_deactivated(level, entity) =>
     entity_was_active(level, entity) && !entity_is_active(level, entity)
+
+function entity_is_collidable(level, entity) =>
+    entity_flags2_collidable(level, entity) == 1
 
 function _entity_status_is(addr, status) {
     status_checks = {
@@ -1646,7 +1650,7 @@ achievement(
             && once(in_level("Venice")
                     && entity_timer("Venice", "Left Final Door") > 0 && entity_timer("Venice", "Left Final Door") <= 0x2d0
                     && entity_animation_changed_from_to("Venice", "Left Final Door", "Closed", "Opening")
-                    && entity_is_active("Venice", "Mine 1"))
+                    && entity_is_collidable("Venice", "Mine 1"))
 
             // reset if the door closes and lara is not past it
             && never(entity_animation_is("Venice", "Left Final Door", "Closed")
