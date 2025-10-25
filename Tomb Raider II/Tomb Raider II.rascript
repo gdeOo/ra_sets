@@ -811,6 +811,7 @@ entities = {
         "Mine 1":              entity_def(106, "Mine"),
         "Left Final Door":     entity_def( 73, "Door 5"),
         "Right Final Door":    entity_def( 74, "Door 6"),
+        "Final Door Button":   entity_def(116, "Button"),
         "Boat 1":              entity_def( 26, "Boat"),
         "Boat 2":              entity_def( 91, "Boat")
     },
@@ -1020,6 +1021,9 @@ function entity_animation_changed_from_to(level, entity, from_animation, to_anim
 
 function entity_action_is(level, entity, action) =>
     entity_action_id(level, entity) == action_id__enum[entity_model(level, entity)][action]
+
+function entity_action_changed(level, entity) =>
+    entity_action_id(level, entity) != prev(entity_action_id(level, entity))
 
 function entity_ptr_action_is(ptr, model, action) =>
     entity_ptr_action_id(ptr) == action_id__enum[model][action]
@@ -1645,16 +1649,22 @@ achievement(
 
             // store a hit when the final doors' timer starts counting down, if the mines are still there
             // note: the doors reopen when the timer starts, even though they had already opened during the
-            // cutscene. we store the hit at that moment, because for 1 frame the door is closed and that
-            // would trigger the reset if the hit had been stored earlier
+            // cutscene. as a bonus, this disallows the timer-skip glitch that occurs if Lara exits the
+            // button room by swimming under the door instead of leaving through the ramp
             && once(in_level("Venice")
                     && entity_timer("Venice", "Left Final Door") > 0 && entity_timer("Venice", "Left Final Door") <= 0x2d0
                     && entity_animation_changed_from_to("Venice", "Left Final Door", "Closed", "Opening")
                     && entity_is_collidable("Venice", "Mine 1"))
 
-            // reset if the door closes and lara is not past it
-            && never(entity_animation_is("Venice", "Left Final Door", "Closed")
-                     && !entity_room_is("Venice", "Lara", 146))
+            // reset if the door closes and lara is not past it, but give some frames leeway
+            // also reset when the button is pressed, to make the leeway consistent across attempts
+            && never(entity_action_changed("Venice", "Final Door Button"))
+            && never(repeated(42,  // many hits are accumulated here during the cutscene after the button is pressed
+                                   // and a couple when the timer activates. this is an experimentally-determined
+                                   // value that consistently leaves about 30 frames of leeway for the end
+                              entity_animation_is("Venice", "Left Final Door", "Closed")
+                              && !entity_room_is("Venice", "Lara", 146)
+                              && !entity_room_is("Venice", "Lara", 154)))
 
             // trigger when the level is beaten
             && in_post_level("Venice")
