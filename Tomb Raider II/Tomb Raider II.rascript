@@ -1653,7 +1653,7 @@ achievement(
             // button room by swimming under the door instead of leaving through the ramp
             && once(in_level("Venice")
                     && entity_timer("Venice", "Left Final Door") > 0 && entity_timer("Venice", "Left Final Door") <= 0x2d0
-                    && entity_animation_changed_from_to("Venice", "Left Final Door", "Closed", "Opening")
+                    && entity_animation_changed_to("Venice", "Left Final Door", "Open")
                     && entity_is_collidable("Venice", "Mine 1"))
 
             // reset if the door closes and lara is not past it, but give some frames leeway
