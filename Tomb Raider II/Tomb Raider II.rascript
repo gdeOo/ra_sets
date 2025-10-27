@@ -1322,7 +1322,6 @@ function never_loading_unsaved_placeholder() => word(0x1111) == 0
 
 function cheat_protection() =>
     ingame_cheats_pause_lock_placeholder()  // ban all guns + level skip
-    && corner_bug_pause_lock_placeholder()  // ban corner bugs
     && no_infinite_ammo()                   // bug inite ammo / NG+
 
 function corner_bug_protection() =>
@@ -1341,7 +1340,7 @@ function beat_level_achievement(level_name, id, badge_id, points) {
         title=level_name,
         description=format("Complete the {0}{1} level, {2}", n, ordinal, level_name),
         points=points,
-        trigger=cheat_protection() && in_post_level(level_name)
+        trigger=in_post_level(level_name)
     )
 }
 
@@ -1401,8 +1400,7 @@ achievement(
     title="Assault Course Ace",
     description="[Lara's Home] Finish the assault course in 1 minute 25 seconds or less",
     points=5,
-    trigger=corner_bug_protection()
-            && in_level("Lara's Home")
+    trigger=in_level("Lara's Home")
             && assault_course_just_completed()
             && assault_course_timer_lt(1, 25, 1)
 )
@@ -1424,8 +1422,7 @@ achievement(
     title="The Family Riches",
     description="[Lara's Home] Visit the treasure room of Croft Manor",
     points=2,
-    trigger=corner_bug_protection()
-            && in_level("Lara's Home")
+    trigger=in_level("Lara's Home")
             && entity_room_is("Lara's Home", "Lara", 53)
 )
 
@@ -1459,8 +1456,7 @@ achievement(
     title="Locked From the Outside",
     description="[Lara's Home] Exit the mansion through the back door",
     points=2,
-    trigger=corner_bug_protection()
-            && in_level("Lara's Home")
+    trigger=in_level("Lara's Home")
             && entity_room_changed_from_to("Lara's Home", "Lara", 59, 19)
 )
 
@@ -1481,6 +1477,7 @@ achievement(
     description="[The Great Wall] Swan dive into the pool on the side of the wall from the roof of one of the towers (no glitches)",
     points=5,
     trigger=cheat_protection()
+            && corner_bug_protection()
             && never_not_in_level("The Great Wall")
             && once(entity_action_changed_to("The Great Wall", "Lara", "Swan Dive Start")
                     && height_ge(-6144))
@@ -2808,8 +2805,7 @@ leaderboard(
     description="Finish the Assault Course in Lara's Home as fast as possible",
     start=in_level("Lara's Home")
           && assault_course_just_started(),
-    cancel=just_used_corner_bug()
-           || assault_course_just_failed(),
+    cancel=assault_course_just_failed(),
     submit=assault_course_just_completed(),
     value=assault_course_timer__mem * 2,
     format="FRAMES"
@@ -2824,8 +2820,6 @@ function level_leaderboard_start(level) =>
 function level_leaderboard_cancel(level) =>
     // cancel if cheats or corner bugs are used
     ingame_cheat_just_used()
-    || just_used_corner_bug()
-
     // also cancel if loading a level form the start...
     || (loading_level() && !in_saved_level())
     // ...or loading a saved level before having saved in the current session
@@ -2836,41 +2830,42 @@ function level_leaderboard_cancel(level) =>
 function level_leaderboard_submit(level) =>
     level_just_ended()
 
-function level_leaderboard(level) {
+function level_leaderboard(name, level) {
     leaderboard(
-        title=format("{0} RTA", level),
+        title=name,
         description=format("Complete '{0}' as fast as possible [Single Session, Save-Load Allowed]", level),
         start=level_leaderboard_start(level),
         cancel=level_leaderboard_cancel(level),
         submit=level_leaderboard_submit(level),
-        value=measured(!is_paused()),
+        value=measured(tally(0, !is_paused())),
         format="FRAMES"
     )
 }
 
-for level in [
-    "The Great Wall",
-    "Venice",
-    "Bartoli's Hideout",
-    "Opera House",
-    "Offshore Rig",
-    "Diving Area",
-    "40 Fathoms",
-    "Wreck of the Maria Doria",
-    "Living Quarters",
-    "The Deck",
-    "Tibetan Foothills",
-    "Barkhang Monastery",
-    "Catacombs of the Talion",
-    "Ice Palace",
-    "Temple of Xian",
-    "Floating Islands",
-    "Dragon's Lair"
+for it in [
+    ["The Great Wall RTA",           "The Great Wall"],
+    ["Venice RTA",                   "Venice"],
+    ["Bartolis Hideout RTA",         "Bartoli's Hideout"],
+    ["Opera House RTA",              "Opera House"],
+    ["Offshore Rig RTA",             "Offshore Rig"],
+    ["Diving Area RTA",              "Diving Area"],
+    ["40 Fathoms RTA",               "40 Fathoms"],
+    ["Wreck of the Maria Doria RTA", "Wreck of the Maria Doria"],
+    ["Living Quarters RTA",          "Living Quarters"],
+    ["The Deck RTA",                 "The Deck"],
+    ["Tibetan Foothills RTA",        "Tibetan Foothills"],
+    ["Barkhang Monastery RTA",       "Barkhang Monastery"],
+    ["Catacombs of the Talion RTA",  "Catacombs of the Talion"],
+    ["Ice Palace RTA",               "Ice Palace"],
+    ["Temple of Xian RTA",           "Temple of Xian"],
+    ["Floating Islands RTA",         "Floating Islands"],
+    ["Dragons Lair RTA",             "Dragon's Lair"],
+    ["Home Sweet Home RTA",          "Home Sweet Home"]
 ] {
-    level_leaderboard(level)
+    lb_name = it[0]
+    level = it[1]
+    level_leaderboard(lb_name, level)
 }
-
-level_leaderboard("Home Sweet Home")
 
 // ========================== //
 //                            //
